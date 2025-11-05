@@ -20,7 +20,7 @@ export default function FloatingCTA() {
     <div className="fixed bottom-8 right-8 z-50 animate-fade-in">
       <a
         href="#tiers"
-        className="bg-black text-white px-6 py-4 rounded-full shadow-lg hover:bg-gray-800 transition-colors flex items-center gap-2 font-semibold"
+        className="bg-black dark:bg-white text-white dark:text-black px-6 py-4 rounded-full shadow-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors flex items-center gap-2 font-semibold"
       >
         <span>View Tiers</span>
         <svg

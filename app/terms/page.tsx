@@ -4,17 +4,17 @@ import { MULTISIG_INFO } from '@/lib/constants'
 
 export default function TermsPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white dark:bg-black">
       <Header />
       <div className="pt-16 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-black mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white mb-8">
             Terms of Service
           </h1>
 
-          <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
+          <div className="prose prose-lg max-w-none space-y-6 text-gray-700 dark:text-gray-300">
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 1. Introduction
               </h2>
               <p>
@@ -25,7 +25,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 2. NFT Membership Tiers
               </h2>
               <p>
@@ -36,7 +36,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 3. Blockchain Network
               </h2>
               <p>
@@ -48,7 +48,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 4. Multi-Signature Wallet
               </h2>
               <p>
@@ -63,7 +63,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 5. Refund Policy
               </h2>
               <p>
@@ -78,7 +78,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 6. KYC Requirements
               </h2>
               <p>
@@ -89,7 +89,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 7. Intellectual Property
               </h2>
               <p>
@@ -101,7 +101,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 8. Limitation of Liability
               </h2>
               <p>
@@ -112,7 +112,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 9. Changes to Terms
               </h2>
               <p>
@@ -122,7 +122,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 10. Contact Information
               </h2>
               <p>
@@ -131,8 +131,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <div className="mt-12 p-6 bg-yellowish rounded-lg">
-              <p className="text-black font-semibold">
+            <div className="mt-12 p-6 bg-yellowish dark:bg-yellowish/20 rounded-lg">
+              <p className="text-black dark:text-white font-semibold">
                 Last updated: {new Date().toLocaleDateString()}
               </p>
             </div>

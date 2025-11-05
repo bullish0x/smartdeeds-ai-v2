@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import EarlyAccessForm from './EarlyAccessForm'
 
 export default function Hero() {
   const [particles, setParticles] = useState<Array<{ x: number; y: number; size: number }>>([])
@@ -16,13 +17,13 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-white overflow-hidden pt-16">
+    <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-32">
       {/* Background Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {particles.map((particle, i) => (
           <div
             key={i}
-            className="absolute rounded-full bg-yellowish opacity-20 animate-float"
+            className="absolute rounded-full bg-yellowish opacity-20 dark:opacity-30 animate-float"
             style={{
               left: `${particle.x}%`,
               top: `${particle.y}%`,
@@ -36,30 +37,31 @@ export default function Hero() {
 
       {/* Hero Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in">
-        <h1 className="text-5xl md:text-7xl font-bold text-black mb-6">
-          SmartDeeds
+        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+          Join the New Era of <span className="text-yellowish">Real Estate Ownership</span>
         </h1>
-        <p className="text-2xl md:text-3xl text-black mb-8 max-w-3xl mx-auto">
-          NFT Membership Tiers on Base Network
+        <p className="text-xl md:text-2xl text-yellowish italic mb-6 max-w-3xl mx-auto">
+          Welcome to SmartDeeds—invite-only access to the multi-million-dollar residential market, secured on blockchain.
         </p>
-        <p className="text-lg md:text-xl text-gray-700 mb-12 max-w-2xl mx-auto">
-          Exclusive membership tiers with Founder, Diamond, Platinum, and Gold options.
-          All funds secured in multi-signature wallets.
+        <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+          Get exclusive education, events, and behind-the-scenes access to the Malibu oceanfront estate by Tadao Ando (formerly owned by Kanye West). If approved, you&apos;ll join Belwood Investments through the rehab and sale, with private renovation updates and real-time learning as we prepare the property for market. Details shared privately by invite.
         </p>
+        {/* Early Access Form */}
+        <div className="mb-8">
+          <EarlyAccessForm />
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="#tiers"
-            className="bg-black text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+            href="#booking"
+            className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-black transition-colors"
           >
-            View NFT Tiers
-          </a>
-          <a
-            href="#trust"
-            className="bg-yellowish text-black px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 transition-colors"
-          >
-            Learn More
+            Book a Private Chat →
           </a>
         </div>
+        <p className="text-sm text-gray-400 mt-6">
+          Exclusive early access. Limited invites remaining.
+        </p>
       </div>
     </section>
   )

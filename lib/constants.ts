@@ -8,6 +8,7 @@ export interface NFTTier {
   benefits: string[];
 }
 
+// Pre-sale Vouchers (NFT Tiers)
 export const NFT_TIERS: NFTTier[] = [
   {
     id: 'founder',
@@ -77,5 +78,13 @@ export const COMPANY_INFO = {
   founded: 'Solslot.com, Bestia AI, Belwood Investments',
   assets: '$150M+ in assets under management',
   mentions: ['The Wall Street Journal', 'The Real Deal'],
+};
+
+export const CALENDLY_LINK = 'https://calendly.com/contact-smartdeeds/smartdeeds-ai-private-membership';
+
+export const PROJECT_MALIBU = {
+  name: 'Project Malibu',
+  image: '/images/ProjectMalibu.webp',
+  description: 'The iconic Malibu oceanfront property designed by Tadao Ando and once owned by Kanye West.',
 };
 

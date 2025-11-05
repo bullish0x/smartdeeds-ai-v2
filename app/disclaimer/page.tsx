@@ -3,18 +3,18 @@ import Footer from '@/components/Footer'
 
 export default function DisclaimerPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white dark:bg-black">
       <Header />
       <div className="pt-16 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-black mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white mb-8">
             Disclaimer
           </h1>
 
-          <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
-            <div className="bg-red-50 border-l-4 border-red-500 p-6 mb-8">
-              <h2 className="text-xl font-bold text-red-800 mb-2">Important Notice</h2>
-              <p className="text-red-700">
+          <div className="prose prose-lg max-w-none space-y-6 text-gray-700 dark:text-gray-300">
+            <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400 p-6 mb-8">
+              <h2 className="text-xl font-bold text-red-800 dark:text-red-400 mb-2">Important Notice</h2>
+              <p className="text-red-700 dark:text-red-300">
                 Please read this disclaimer carefully before participating in SmartDeeds
                 NFT membership tiers. By purchasing any NFT, you acknowledge that you have
                 read, understood, and agree to be bound by this disclaimer.
@@ -22,7 +22,7 @@ export default function DisclaimerPage() {
             </div>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 1. Investment Risk Warning
               </h2>
               <p>
@@ -39,7 +39,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 2. No Financial Advice
               </h2>
               <p>
@@ -50,7 +50,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 3. Regulatory Compliance
               </h2>
               <p>
@@ -64,7 +64,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 4. Technology Risks
               </h2>
               <p>
@@ -81,7 +81,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 5. No Guarantees
               </h2>
               <p>
@@ -96,7 +96,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 6. Real Estate Disclaimer
               </h2>
               <p>
@@ -108,7 +108,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 7. Tax Implications
               </h2>
               <p>
@@ -119,7 +119,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 8. Limitation of Liability
               </h2>
               <p>
@@ -131,7 +131,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-black mt-8 mb-4">
+              <h2 className="text-2xl font-bold text-black dark:text-white mt-8 mb-4">
                 9. Acknowledgment
               </h2>
               <p>
@@ -141,8 +141,8 @@ export default function DisclaimerPage() {
               </p>
             </section>
 
-            <div className="mt-12 p-6 bg-yellowish rounded-lg">
-              <p className="text-black font-semibold">
+            <div className="mt-12 p-6 bg-yellowish dark:bg-yellowish/20 rounded-lg">
+              <p className="text-black dark:text-white font-semibold">
                 This disclaimer is not exhaustive. Please review all terms and conditions
                 carefully before making any investment decisions.
               </p>

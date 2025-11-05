@@ -24,8 +24,20 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--white);
-  color: var(--black);
+  background-color: var(--black);
+  color: var(--white);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background-color: var(--black);
+  color: var(--white);
+}
+
+/* Default dark mode styling */
+html:not(.light) body {
+  background-color: var(--black);
+  color: var(--white);
 }
 
 /* Smooth scrolling */
@@ -39,7 +51,11 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--white);
+  background: var(--black);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--black);
 }
 
 ::-webkit-scrollbar-thumb {
