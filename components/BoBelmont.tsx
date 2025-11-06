@@ -30,33 +30,13 @@ export default function BoBelmont() {
             </div>
           </div>
           <div className="order-1 md:order-2 relative h-96 md:h-[500px] rounded-lg overflow-hidden shadow-xl">
-            {/* Placeholder for Bo Belmont image - replace with actual image path */}
-            <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-              <div className="text-center">
-                <svg
-                  className="w-32 h-32 mx-auto text-gray-600 mb-4"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <p className="text-gray-500">Bo Belmont Image</p>
-                <p className="text-sm text-gray-600 mt-2">Add image to public/images/</p>
-              </div>
-            </div>
-            {/* Uncomment when image is available:
             <Image
-              src="/images/BoBelmont.jpg"
+              src="/images/bo-belmont.jpg"
               alt="Bo Belmont"
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
-            */}
           </div>
         </div>
       </div>
