@@ -6,6 +6,7 @@ export interface NFTTier {
   image: string;
   description: string;
   benefits: string[];
+  tokenId: number; // Token ID for minting
 }
 
 // Pre-sale Vouchers (NFT Tiers)
@@ -23,6 +24,7 @@ export const NFT_TIERS: NFTTier[] = [
       'Exclusive events',
       'Founder badge',
     ],
+    tokenId: 0, // Token ID 0 for Founder (will add others later)
   },
   {
     id: 'diamond',
@@ -37,6 +39,7 @@ export const NFT_TIERS: NFTTier[] = [
       'Exclusive events',
       'Diamond badge',
     ],
+    tokenId: 1, // Placeholder - will be configured later
   },
   {
     id: 'platinum',
@@ -51,6 +54,7 @@ export const NFT_TIERS: NFTTier[] = [
       'Member events',
       'Platinum badge',
     ],
+    tokenId: 2, // Placeholder - will be configured later
   },
   {
     id: 'gold',
@@ -65,8 +69,15 @@ export const NFT_TIERS: NFTTier[] = [
       'Public events',
       'Gold badge',
     ],
+    tokenId: 3, // Placeholder - will be configured later
   },
 ];
+
+// Contract configuration
+export const CONTRACT_CONFIG = {
+  address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x12CE7BD130aaACc49e6b2C7d23e41e145D99BBB6',
+  chainId: process.env.NEXT_PUBLIC_CHAIN_ID ? parseInt(process.env.NEXT_PUBLIC_CHAIN_ID) : 8453, // Base mainnet
+};
 
 export const MULTISIG_INFO = {
   network: 'Base',

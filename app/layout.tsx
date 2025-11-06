@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import '../styles/globals.css'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { ThirdwebProvider } from '@/components/ThirdwebProvider'
 
 export const metadata: Metadata = {
   title: 'SmartDeeds - NFT Membership Tiers',
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="dark">
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThirdwebProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ThirdwebProvider>
       </body>
     </html>
   )
