@@ -3,10 +3,10 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import ThemeToggle from './ThemeToggle'
 import { ConnectButton } from 'thirdweb/react'
 import { base } from 'thirdweb/chains'
 import { getThirdwebClient } from '@/lib/thirdweb-client'
+import LanguageSelector from './LanguageSelector'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -37,8 +37,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            <ThemeToggle />
+          <div className="hidden md:flex items-center space-x-4">
             <Link href="/#tiers" className="text-white hover:text-yellowish transition-colors">
               Pre-Sale Vouchers
             </Link>
@@ -57,8 +56,9 @@ export default function Header() {
             <Link href="/kyc" className="text-white hover:text-yellowish transition-colors">
               KYC
             </Link>
+            <LanguageSelector />
             {client && (
-              <div style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px' }}>
+              <div className="scale-90 origin-right" style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px', fontSize: '12px', padding: '4px 8px' }}>
                 <ConnectButton client={client} chain={base} />
               </div>
             )}
@@ -66,9 +66,9 @@ export default function Header() {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
-            <ThemeToggle />
+            <LanguageSelector />
             {client && (
-              <div style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px', fontSize: '14px', padding: '8px 16px' }}>
+              <div className="scale-90" style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px', fontSize: '12px', padding: '4px 8px' }}>
                 <ConnectButton client={client} chain={base} />
               </div>
             )}

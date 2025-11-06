@@ -7,6 +7,7 @@ import { prepareContractCall, sendTransaction, readContract } from 'thirdweb'
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { base } from 'thirdweb/chains'
 import { getThirdwebClient } from '@/lib/thirdweb-client'
+import { toast } from '@/hooks/use-toast'
 
 interface NFTTierCardProps {
   tokenId: number
@@ -179,22 +180,79 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
 
       console.log('Transaction successful:', receipt)
       setTxHash(receipt.transactionHash)
-      setSuccess(`Successfully minted ${quantity} NFT${quantity > 1 ? 's' : ''}!`)
+      const successMessage = `Successfully minted ${quantity} NFT${quantity > 1 ? 's' : ''}!`
+      setSuccess(successMessage)
+      
+      // Show success toast
+      toast({
+        title: 'Mint Successful!',
+        description: successMessage,
+        variant: 'default',
+      })
     } catch (err: any) {
       console.error('Mint error:', err)
+      
       // Provide more helpful error messages
       let errorMessage = 'Failed to mint NFT. Please try again.'
-      if (err.message) {
+      let errorTitle = 'Mint Failed'
+      
+      // Handle wallet cancellation/rejection
+      const errorString = JSON.stringify(err).toLowerCase()
+      const errorMessageLower = err?.message?.toLowerCase() || ''
+      const errorCode = err?.code || err?.error?.code
+      
+      // Check for user rejection/cancellation patterns
+      if (
+        errorCode === 4001 || // MetaMask user rejection code
+        errorMessageLower.includes('user rejected') ||
+        errorMessageLower.includes('user denied') ||
+        errorMessageLower.includes('user cancelled') ||
+        errorMessageLower.includes('rejected') ||
+        errorMessageLower.includes('cancelled') ||
+        errorString.includes('user rejected') ||
+        errorString.includes('user denied') ||
+        errorString.includes('user cancelled') ||
+        errorString.includes('rejected') ||
+        (err && Object.keys(err).length === 0) // Empty error object often means cancellation
+      ) {
+        errorTitle = 'Transaction Cancelled'
+        errorMessage = 'You cancelled the transaction in your wallet.'
+        
+        // Show cancellation toast
+        toast({
+          title: errorTitle,
+          description: errorMessage,
+          variant: 'default',
+        })
+        
+        setError(null) // Don't show error in card for cancellation
+        return
+      }
+      
+      // Handle other specific error cases
+      if (err?.message) {
         if (err.message.includes('insufficient funds')) {
-          errorMessage = 'Insufficient funds. Please ensure you have enough tokens for payment and gas.'
-        } else if (err.message.includes('user rejected')) {
-          errorMessage = 'Transaction was cancelled.'
+          errorTitle = 'Insufficient Funds'
+          errorMessage = 'Please ensure you have enough tokens for payment and gas.'
         } else if (err.message.includes('claim condition')) {
-          errorMessage = 'Claim conditions not met. Please check if this NFT is available for minting.'
+          errorTitle = 'Claim Conditions Not Met'
+          errorMessage = 'Please check if this NFT is available for minting.'
         } else {
           errorMessage = err.message
         }
+      } else if (err?.error?.message) {
+        errorMessage = err.error.message
+      } else if (err?.reason) {
+        errorMessage = err.reason
       }
+      
+      // Show error toast
+      toast({
+        title: errorTitle,
+        description: errorMessage,
+        variant: 'destructive',
+      })
+      
       setError(errorMessage)
     } finally {
       setIsClaiming(false)
@@ -205,14 +263,30 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
   const formatPrice = (price: bigint, currency: string) => {
     if (price === BigInt(0)) return 'Free'
     
-    // Convert from wei to ETH/BASE
-    const ethPrice = Number(price) / 1e18
-    const currencySymbol = currency === '0x0000000000000000000000000000000000000000' ? 'ETH' : 'TOKEN'
+    // Check if currency is native token (ETH/BASE)
+    const isNative = currency === '0x0000000000000000000000000000000000000000' || 
+                     currency === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
     
-    if (ethPrice < 0.01) {
-      return `${ethPrice.toFixed(6)} ${currencySymbol}`
+    // For native tokens, use 18 decimals; for ERC20, we'll assume 18 decimals unless we fetch it
+    // Most ERC20 tokens use 18 decimals, but some use 6 (like USDC)
+    const decimals = isNative ? 18 : 18 // Default to 18, could be improved by fetching token decimals
+    const priceNumber = Number(price) / Math.pow(10, decimals)
+    const currencySymbol = isNative ? 'ETH' : 'TOKEN'
+    
+    // Format large numbers with commas
+    const formatNumber = (num: number) => {
+      if (num < 0.01) {
+        return num.toFixed(6)
+      } else if (num < 1) {
+        return num.toFixed(4)
+      } else if (num < 1000) {
+        return num.toFixed(4)
+      } else {
+        return num.toLocaleString('en-US', { maximumFractionDigits: 4, minimumFractionDigits: 0 })
+      }
     }
-    return `${ethPrice.toFixed(4)} ${currencySymbol}`
+    
+    return `${formatNumber(priceNumber)} ${currencySymbol}`
   }
 
   const totalPrice = claimCondition ? claimCondition.pricePerToken * BigInt(quantity) : BigInt(0)
@@ -220,8 +294,13 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
   if (!contract) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-        <div className="p-6 text-center">
-          <div className="text-gray-500 dark:text-gray-400">Initializing contract...</div>
+        <div className="relative h-64 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+          <div className="text-gray-400 dark:text-gray-500">Loading...</div>
+        </div>
+        <div className="p-6">
+          <div className="h-7 bg-gray-200 dark:bg-gray-700 rounded mb-2 animate-pulse"></div>
+          <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded mb-4 animate-pulse"></div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-4 animate-pulse"></div>
         </div>
       </div>
     )
@@ -239,15 +318,26 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
           <h3 className="text-2xl font-bold text-black dark:text-white mb-2">
             <NFTName />
           </h3>
-          <p className="text-3xl font-bold text-black dark:text-white mb-4">
-            {claimCondition ? formatPrice(claimCondition.pricePerToken, claimCondition.currency) : isLoading ? 'Loading...' : 'Price unavailable'}
-          </p>
+          <div className="mb-4">
+            <p className="text-3xl font-bold text-black dark:text-white">
+              {isLoading && !claimCondition
+                ? 'Loading...' 
+                : claimCondition 
+                  ? formatPrice(claimCondition.pricePerToken, claimCondition.currency)
+                  : 'Price unavailable'}
+            </p>
+            {claimCondition && (
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                per NFT
+              </p>
+            )}
+          </div>
           <p className="text-gray-600 dark:text-gray-300 mb-4">
             <NFTDescription />
           </p>
         {claimCondition && (
-          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm">
-            <div className="flex justify-between mb-1">
+          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm space-y-2">
+            <div className="flex justify-between items-center">
               <span className="text-gray-600 dark:text-gray-400">Available:</span>
               <span className="text-black dark:text-white font-semibold">
                 {claimCondition.maxClaimableSupply > BigInt(0)
@@ -255,14 +345,24 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
                   : 'Unlimited'}
               </span>
             </div>
-            {claimCondition.quantityLimitPerWallet > BigInt(0) && (
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Max per wallet:</span>
-                <span className="text-black dark:text-white font-semibold">
-                  {claimCondition.quantityLimitPerWallet.toString()}
-                </span>
-              </div>
-            )}
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 dark:text-gray-400">Max per wallet:</span>
+              <span className="text-black dark:text-white font-semibold">
+                {claimCondition.quantityLimitPerWallet > BigInt(0)
+                  ? claimCondition.quantityLimitPerWallet.toString()
+                  : 'Unlimited'}
+              </span>
+            </div>
+          </div>
+        )}
+        {!claimCondition && !isLoading && (
+          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 dark:text-gray-400">Status:</span>
+              <span className="text-gray-500 dark:text-gray-500 font-semibold">
+                Claim condition unavailable
+              </span>
+            </div>
           </div>
         )}
         {error && (
@@ -321,9 +421,11 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
               +
             </button>
           </div>
-          {claimCondition && totalPrice > BigInt(0) && (
+          {claimCondition && (
             <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center">
-              Total: {formatPrice(totalPrice, claimCondition.currency)}
+              Total: {totalPrice > BigInt(0) 
+                ? formatPrice(totalPrice, claimCondition.currency)
+                : 'Free'}
             </div>
           )}
         </div>
