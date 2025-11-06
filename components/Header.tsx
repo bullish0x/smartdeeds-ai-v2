@@ -1,15 +1,25 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import ThemeToggle from './ThemeToggle'
-import { ConnectButton, useThirdwebClient } from 'thirdweb/react'
+import { ConnectButton } from 'thirdweb/react'
 import { base } from 'thirdweb/chains'
+import { getThirdwebClient } from '@/lib/thirdweb-client'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const client = useThirdwebClient()
+
+  // Get client for ConnectButton
+  const client = useMemo(() => {
+    try {
+      return getThirdwebClient()
+    } catch (error) {
+      console.warn('Failed to get thirdweb client:', error)
+      return null
+    }
+  }, [])
 
   return (
     <header className="fixed top-10 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800">
@@ -47,17 +57,21 @@ export default function Header() {
             <Link href="/kyc" className="text-white hover:text-yellowish transition-colors">
               KYC
             </Link>
-            <div style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px' }}>
-              <ConnectButton client={client} chain={base} />
-            </div>
+            {client && (
+              <div style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px' }}>
+                <ConnectButton client={client} chain={base} />
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle />
-            <div style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px', fontSize: '14px', padding: '8px 16px' }}>
-              <ConnectButton client={client} chain={base} />
-            </div>
+            {client && (
+              <div style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px', fontSize: '14px', padding: '8px 16px' }}>
+                <ConnectButton client={client} chain={base} />
+              </div>
+            )}
             <button
               className="p-2 text-white"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

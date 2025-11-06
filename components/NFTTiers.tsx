@@ -16,8 +16,8 @@ export default function NFTTiers() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {NFT_TIERS.map((tier) => (
-            <NFTTierCard key={tier.id} tier={tier} />
+          {NFT_TIERS.filter((tier) => tier.tokenId === 0).map((tier) => (
+            <NFTTierCard key={tier.id} tokenId={tier.tokenId} />
           ))}
         </div>
 
