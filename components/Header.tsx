@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { ConnectButton } from 'thirdweb/react'
 import { base } from 'thirdweb/chains'
 import { getThirdwebClient } from '@/lib/thirdweb-client'
+import { getImagePath } from '@/lib/utils'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -26,7 +27,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
             <Image
-              src="/images/smartdeeds.png"
+              src={getImagePath("/images/smartdeeds.png")}
               alt="SmartDeeds"
               width={180}
               height={40}

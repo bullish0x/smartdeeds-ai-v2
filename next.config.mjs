@@ -2,6 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   output: 'export', // Enable static export for client-side only deployment
+  basePath: '/smartdeeds', // Configure for subdirectory deployment
+  assetPrefix: '/smartdeeds', // Ensure all assets are prefixed correctly
   images: {
     unoptimized: true, // Required for static export
     remotePatterns: [

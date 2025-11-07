@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import CountdownTimer from './CountdownTimer'
+import { getImagePath } from '@/lib/utils'
 
 const IMAGES = [
   '/images/gallery/1.jpg',
@@ -12,7 +13,7 @@ const IMAGES = [
   '/images/gallery/4.jpg',
   '/images/gallery/5.jpg',
   '/images/gallery/ProjectMalibu.webp',
-]
+].map(getImagePath)
 
 export default function Hero() {
   const [index, setIndex] = useState(0)

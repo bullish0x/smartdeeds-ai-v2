@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { PROJECT_MALIBU } from '@/lib/constants'
+import { getImagePath } from '@/lib/utils'
 
 const GALLERY_IMAGES = [
   '/images/gallery/1.jpg',
@@ -11,7 +12,7 @@ const GALLERY_IMAGES = [
   '/images/gallery/4.jpg',
   '/images/gallery/5.jpg',
   '/images/gallery/ProjectMalibu.webp',
-]
+].map(getImagePath)
 
 export default function ProjectMalibu() {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null)

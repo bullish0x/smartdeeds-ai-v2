@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PUBLICATIONS } from '@/lib/publications'
+import { getImagePath } from '@/lib/utils'
 
 export default function PublicationsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -93,7 +94,7 @@ export default function PublicationsCarousel() {
                 <div className="relative w-full max-w-[320px] h-24 md:h-28 lg:h-32 mx-auto mb-6 flex items-center justify-center">
                   {currentPublication.logo ? (
                     <Image
-                      src={currentPublication.logo}
+                      src={getImagePath(currentPublication.logo)}
                       alt={currentPublication.title}
                       width={320}
                       height={128}

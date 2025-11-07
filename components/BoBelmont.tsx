@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { getImagePath } from '@/lib/utils'
 
 export default function BoBelmont() {
   return (
@@ -31,7 +32,7 @@ export default function BoBelmont() {
           </div>
           <div className="order-1 md:order-2 relative h-96 md:h-[500px] rounded-lg overflow-hidden shadow-xl">
             <Image
-              src="/images/bo-belmont.jpg"
+              src={getImagePath("/images/bo-belmont.jpg")}
               alt="Bo Belmont"
               fill
               className="object-cover"

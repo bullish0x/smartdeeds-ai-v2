@@ -1,6 +1,8 @@
+import { Fragment } from 'react'
 import { COMPANY_INFO } from '@/lib/constants'
 import { COMPANIES } from '@/lib/companies'
 import Image from 'next/image'
+import { getImagePath } from '@/lib/utils'
 
 export default function TrustSection() {
   return (
@@ -18,7 +20,12 @@ export default function TrustSection() {
             SmartDeeds is founded by the team behind{' '}
             <strong>{COMPANY_INFO.founded}</strong>—with over{' '}
             <strong>{COMPANY_INFO.assets}</strong> and features in{' '}
-            <em>{COMPANY_INFO.mentions.join('</em> and <em>')}</em>.
+            {COMPANY_INFO.mentions.map((mention, index, array) => (
+              <Fragment key={index}>
+                <em>{mention}</em>
+                {index < array.length - 1 && ' and '}
+              </Fragment>
+            ))}.
           </p>
 
           <p className="text-lg text-gray-300">
@@ -36,7 +43,7 @@ export default function TrustSection() {
               >
                 {company.logo ? (
                   <Image
-                    src={company.logo}
+                    src={getImagePath(company.logo)}
                     alt={company.name}
                     width={120}
                     height={40}
