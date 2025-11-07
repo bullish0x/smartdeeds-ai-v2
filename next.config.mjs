@@ -3,9 +3,9 @@ const isProd = process.env.NODE_ENV === "production";
 const nextConfig = {
   reactStrictMode: true,
   output: "export", // Enable static export for client-side only deployment
-  ...(isProd ? { basePath: "usa", assetPrefix: "usa" } : {}),
+  ...(isProd ? { basePath: "/intl", assetPrefix: "/intl" } : {}),
   env: {
-    NEXT_PUBLIC_BASE_PATH: isProd ? "usa" : "usa",
+    NEXT_PUBLIC_BASE_PATH: isProd ? "/intl" : "/intl",
   },
   images: {
     unoptimized: true, // Required for static export
