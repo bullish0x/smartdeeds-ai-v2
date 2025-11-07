@@ -149,7 +149,7 @@ npm run lint
 
 ## Environment Variables
 
-Create a `.env` file in the root directory (you can copy from `.env.local.example`):
+Create a `.env.local` file in the root directory (you can copy from `.env.local.example`):
 
 ```env
 # Site Configuration
@@ -160,20 +160,40 @@ NEXT_PUBLIC_THIRDWEB_CLIENT_ID=your_thirdweb_client_id
 NEXT_PUBLIC_THIRDWEB_PROJECT_ID=your_thirdweb_project_id
 
 # Contract Configuration (Base Network)
-NEXT_PUBLIC_CONTRACT_ADDRESS=
+NEXT_PUBLIC_CONTRACT_ADDRESS=your_contract_address
 NEXT_PUBLIC_CHAIN_ID=8453
+
+# Network Configuration
+NEXT_PUBLIC_NETWORK_NAME=Base
+NEXT_PUBLIC_MULTISIG_DESCRIPTION=All funds are held in a multi-signature wallet for security and refund purposes.
+
+# Company Information
+NEXT_PUBLIC_COMPANY_NAME=SmartDeeds
+NEXT_PUBLIC_COMPANY_FOUNDED=Solslot.com, Bestia AI, Belwood Investments
+NEXT_PUBLIC_COMPANY_ASSETS=$150M+ in assets under management
+NEXT_PUBLIC_COMPANY_MENTIONS=The Wall Street Journal, The Real Deal
+
+# Calendly Configuration
+NEXT_PUBLIC_CALENDLY_LINK=https://calendly.com/contact-smartdeeds/smartdeeds-ai-private-membership
 ```
 
 ### Required Variables
 
 - `NEXT_PUBLIC_THIRDWEB_CLIENT_ID` - **Required**: Your Thirdweb Client ID. Get one from [thirdweb.com](https://thirdweb.com)
-- `NEXT_PUBLIC_SITE_URL` - Site URL for SEO metadata (defaults to `https://smartdeeds.ai`)
+- `NEXT_PUBLIC_CONTRACT_ADDRESS` - **Required**: Your smart contract address
+- `NEXT_PUBLIC_CHAIN_ID` - **Required**: Blockchain network ID (e.g., `8453` for Base mainnet)
+- `NEXT_PUBLIC_CALENDLY_LINK` - **Required**: Your Calendly booking link
+- `NEXT_PUBLIC_SITE_URL` - Site URL for SEO metadata
 
 ### Optional Variables
 
 - `NEXT_PUBLIC_THIRDWEB_PROJECT_ID` - Your Thirdweb Project ID
-- `NEXT_PUBLIC_CONTRACT_ADDRESS` - OSmart contract address (defaults to the provided address)
-- `NEXT_PUBLIC_CHAIN_ID` - Blockchain network ID (defaults to `8453` for Base mainnet)
+- `NEXT_PUBLIC_NETWORK_NAME` - Network name (defaults to "Base")
+- `NEXT_PUBLIC_MULTISIG_DESCRIPTION` - Description for multisig wallet info
+- `NEXT_PUBLIC_COMPANY_NAME` - Company name (defaults to "SmartDeeds")
+- `NEXT_PUBLIC_COMPANY_FOUNDED` - Company founding information
+- `NEXT_PUBLIC_COMPANY_ASSETS` - Assets under management description
+- `NEXT_PUBLIC_COMPANY_MENTIONS` - Comma-separated list of media mentions
 
 > **Note**: All `NEXT_PUBLIC_*` variables are exposed to the browser. Never put sensitive information in these variables.
 
