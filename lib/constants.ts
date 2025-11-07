@@ -73,25 +73,36 @@ export const NFT_TIERS: NFTTier[] = [
   },
 ];
 
+// Helper function to get required env var
+function getRequiredEnvVar(key: string): string {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`${key} is required. Please set it in your .env.local file.`);
+  }
+  return value;
+}
+
 // Contract configuration
 export const CONTRACT_CONFIG = {
-  address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x12CE7BD130aaACc49e6b2C7d23e41e145D99BBB6',
-  chainId: process.env.NEXT_PUBLIC_CHAIN_ID ? parseInt(process.env.NEXT_PUBLIC_CHAIN_ID) : 8453, // Base mainnet
+  address: getRequiredEnvVar('NEXT_PUBLIC_CONTRACT_ADDRESS'),
+  chainId: parseInt(getRequiredEnvVar('NEXT_PUBLIC_CHAIN_ID')),
 };
 
 export const MULTISIG_INFO = {
-  network: 'Base',
-  description: 'All funds are held in a multi-signature wallet for security and refund purposes.',
+  network: process.env.NEXT_PUBLIC_NETWORK_NAME || 'Base',
+  description: process.env.NEXT_PUBLIC_MULTISIG_DESCRIPTION || 'All funds are held in a multi-signature wallet for security and refund purposes.',
 };
 
 export const COMPANY_INFO = {
-  name: 'SmartDeeds',
-  founded: 'Solslot.com, Bestia AI, Belwood Investments',
-  assets: '$150M+ in assets under management',
-  mentions: ['The Wall Street Journal', 'The Real Deal'],
+  name: process.env.NEXT_PUBLIC_COMPANY_NAME || 'SmartDeeds',
+  founded: process.env.NEXT_PUBLIC_COMPANY_FOUNDED || 'Solslot.com, Bestia AI, Belwood Investments',
+  assets: process.env.NEXT_PUBLIC_COMPANY_ASSETS || '$150M+ in assets under management',
+  mentions: process.env.NEXT_PUBLIC_COMPANY_MENTIONS 
+    ? process.env.NEXT_PUBLIC_COMPANY_MENTIONS.split(',').map(m => m.trim())
+    : ['The Wall Street Journal', 'The Real Deal'],
 };
 
-export const CALENDLY_LINK = 'https://calendly.com/contact-smartdeeds/smartdeeds-ai-private-membership';
+export const CALENDLY_LINK = getRequiredEnvVar('NEXT_PUBLIC_CALENDLY_LINK');
 
 export const PROJECT_MALIBU = {
   name: 'Project Malibu',
