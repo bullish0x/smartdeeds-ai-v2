@@ -7,7 +7,6 @@ import {
   NFTProvider,
   NFTMedia,
   NFTName,
-  NFTDescription,
   ClaimButton,
 } from "thirdweb/react";
 import { getContract } from "thirdweb/contract";
@@ -277,7 +276,7 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
             </p>
             {claimCondition && (
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                per NFT
+                per SmartDeed
               </p>
             )}
           </div>
@@ -385,7 +384,8 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
                   </span>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Claim conditions need to be set up for this NFT. Visit the{" "}
+                  Claim conditions need to be set up for this SmartDeed. Visit
+                  the{" "}
                   <a
                     href={`https://thirdweb.com/${base.id}/${CONTRACT_CONFIG.address}/claim-conditions`}
                     target="_blank"
@@ -496,7 +496,7 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
               onTransactionConfirmed={() => {
                 toast({
                   title: "Mint Successful!",
-                  description: `Successfully minted ${quantity} NFT${quantity > 1 ? "s" : ""}!`,
+                  description: `Successfully minted ${quantity} SmartDeed${quantity > 1 ? "s" : ""}!`,
                 });
                 setQuantity(1);
               }}
@@ -504,13 +504,14 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
                 toast({
                   title: "Mint Failed",
                   description:
-                    error.message || "Failed to mint NFT. Please try again.",
+                    error.message ||
+                    "Failed to mint SmartDeed. Please try again.",
                   variant: "destructive",
                 });
               }}
               className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
             >
-              Mint {quantity} NFT{quantity > 1 ? "s" : ""}
+              Mint {quantity} SmartDeed{quantity > 1 ? "s" : ""}
             </ClaimButton>
           ) : (
             <button
