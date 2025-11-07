@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === "production";
+// Base path for subdirectory deployment - must match NEXT_PUBLIC_BASE_PATH in .env.local
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/usa';
 const nextConfig = {
   reactStrictMode: true,
   output: 'export', // Enable static export for client-side only deployment
-  basePath: '', // Base path for subdirectory deployment
-  assetPrefix: '', // Asset prefix for static files
+  basePath: basePath, // Base path for subdirectory deployment
+  assetPrefix: basePath, // Asset prefix for static files
   images: {
     unoptimized: true, // Required for static export
     remotePatterns: [

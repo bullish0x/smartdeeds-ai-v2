@@ -8,7 +8,7 @@ import HowItWorks from "@/components/HowItWorks";
 // Use the tiers component once (rename as you prefer)
 import SmartDeedsTiers from "@/components/NFTTiers";
 import ProjectMalibu from "@/components/ProjectMalibu";
-// We’ll inline your full custom Malibu Program section below, so the component import is optional
+// We'll inline your full custom Malibu Program section below, so the component import is optional
 // import MalibuProgram from "@/components/MalibuProgram";
 import BoBelmont from "@/components/BoBelmont";
 import VideoSection from "@/components/VideoSection";
@@ -23,6 +23,7 @@ import {
   generateOrganizationSchema,
   generateWebSiteSchema,
 } from "@/lib/metadata";
+import { getImagePath } from "@/lib/utils";
 
 export const metadata: Metadata = generatePageMetadata({
   title:
@@ -30,7 +31,7 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Join the new era of real estate ownership with SmartDeeds. Exclusive SmartDeeds membership tiers on Base network providing access to Project Malibu—the iconic Tadao Ando-designed oceanfront estate. Founder ($1M), Diamond ($100K), Platinum ($10K), and Gold ($1K) tiers available. Blockchain-secured membership passes with multi-signature wallet security.",
   path: "/",
-  ogImage: "/images/gallery/ProjectMalibu.webp",
+  ogImage: getImagePath("/images/gallery/ProjectMalibu.webp"),
 });
 
 export default function Home() {

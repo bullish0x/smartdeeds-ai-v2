@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { COMPANY_INFO } from "./constants";
+import { getImagePath } from "./utils";
 
 // Site configuration
 export const siteConfig = {
@@ -7,7 +8,7 @@ export const siteConfig = {
   description:
     "Exclusive SmartDeeds membership tiers for premium real estate access. Join the new era of real estate ownership with blockchain-secured membership passes on Base network.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://smartdeeds.ai",
-  ogImage: "/images/gallery/ProjectMalibu.webp", // Using Project Malibu as default OG image
+  ogImage: getImagePath("/images/gallery/ProjectMalibu.webp"), // Using Project Malibu as default OG image
   twitterHandle: "@smartdeeds", // Update with actual Twitter handle
   creator: "Bo Belmont",
 };
@@ -98,7 +99,7 @@ export function generateMetadata({
   noindex?: boolean;
 }): Metadata {
   const url = `${siteConfig.url}${path}`;
-  const image = ogImage || siteConfig.ogImage;
+  const image = ogImage ? getImagePath(ogImage) : siteConfig.ogImage;
 
   return {
     title,
@@ -145,7 +146,7 @@ export function generateOrganizationSchema() {
     name: COMPANY_INFO.name,
     description: siteConfig.description,
     url: siteConfig.url,
-    logo: `${siteConfig.url}/images/smartdeeds.png`,
+    logo: `${siteConfig.url}${getImagePath("/images/smartdeeds.png")}`,
     founder: {
       "@type": "Person",
       name: siteConfig.creator,
