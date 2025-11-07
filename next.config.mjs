@@ -4,6 +4,9 @@ const nextConfig = {
   reactStrictMode: true,
   output: "export", // Enable static export for client-side only deployment
   ...(isProd ? { basePath: "/smartdeeds", assetPrefix: "/smartdeeds" } : {}),
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isProd ? "/smartdeeds" : "",
+  },
   images: {
     unoptimized: true, // Required for static export
     remotePatterns: [

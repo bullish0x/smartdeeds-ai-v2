@@ -39,45 +39,22 @@ export default function MembershipPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
             <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-5 bg-white dark:bg-gray-900">
               <h3 className="text-xl font-bold text-black dark:text-white mb-1">
-                🥇 Gold — Insider
+                👑 Founders Circle — Legacy
               </h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                $1,000 • 1.20× Exchange Rate
+                $300,000 • 1.33× Exchange Rate
               </p>
               <ul className="text-sm text-gray-600 dark:text-gray-400 list-none pl-0 space-y-1">
-                <li>🏛️ Guided day at the Malibu Estate</li>
-                <li>📐 Architecture briefing + tour</li>
-                <li>🤝 Private networking mixer</li>
+                <li>💎 Includes all Diamond perks</li>
+                <li>👥 Exclusive Founders Summit</li>
+                <li>🔖 Name recognition • 🤝 co‑branding</li>
               </ul>
               <div className="mt-3">
                 <a
                   href="/#tiers"
                   className="text-yellowish text-sm underline hover:no-underline"
                 >
-                  Select Gold →
-                </a>
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-5 bg-white dark:bg-gray-900">
-              <h3 className="text-xl font-bold text-black dark:text-white mb-1">
-                🥈 Platinum — Social
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                $10,000 • 1.25× Exchange Rate
-              </p>
-              <ul className="text-sm text-gray-600 dark:text-gray-400 list-none pl-0 space-y-1">
-                <li>🥇 Includes all Gold perks</li>
-                <li>
-                  🌅 2 Malibu Member Days/year (receptions, talks, guest access)
-                </li>
-              </ul>
-              <div className="mt-3">
-                <a
-                  href="/#tiers"
-                  className="text-yellowish text-sm underline hover:no-underline"
-                >
-                  Select Platinum →
+                  Request Invite →
                 </a>
               </div>
             </div>
@@ -108,22 +85,45 @@ export default function MembershipPage() {
 
             <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-5 bg-white dark:bg-gray-900">
               <h3 className="text-xl font-bold text-black dark:text-white mb-1">
-                👑 Founders Circle — Legacy
+                🥈 Platinum — Social
               </h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                $300,000 • 1.33× Exchange Rate
+                $10,000 • 1.25× Exchange Rate
               </p>
               <ul className="text-sm text-gray-600 dark:text-gray-400 list-none pl-0 space-y-1">
-                <li>💎 Includes all Diamond perks</li>
-                <li>👥 Exclusive Founders Summit</li>
-                <li>🔖 Name recognition • 🤝 co‑branding</li>
+                <li>🥇 Includes all Gold perks</li>
+                <li>
+                  🌅 2 Malibu Member Days/year (receptions, talks, guest access)
+                </li>
               </ul>
               <div className="mt-3">
                 <a
                   href="/#tiers"
                   className="text-yellowish text-sm underline hover:no-underline"
                 >
-                  Request Invite →
+                  Select Platinum →
+                </a>
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-5 bg-white dark:bg-gray-900">
+              <h3 className="text-xl font-bold text-black dark:text-white mb-1">
+                🥇 Gold — Insider
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                $1,000 • 1.20× Exchange Rate
+              </p>
+              <ul className="text-sm text-gray-600 dark:text-gray-400 list-none pl-0 space-y-1">
+                <li>🏛️ Guided day at the Malibu Estate</li>
+                <li>📐 Architecture briefing + tour</li>
+                <li>🤝 Private networking mixer</li>
+              </ul>
+              <div className="mt-3">
+                <a
+                  href="/#tiers"
+                  className="text-yellowish text-sm underline hover:no-underline"
+                >
+                  Select Gold →
                 </a>
               </div>
             </div>

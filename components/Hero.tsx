@@ -102,12 +102,8 @@ export default function Hero() {
           {!timerExpired ? (
             <>
               <p className="text-lg md:text-xl text-white mb-2">
-                Global Launch in
+                PRE-LAUNCH LIVE NOW
               </p>
-              <CountdownTimer
-                targetDate={launchDate}
-                onExpired={handleTimerExpired}
-              />
             </>
           ) : (
             <a

@@ -384,9 +384,14 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
           </div>
           <div className="mb-4">
             <p className="text-3xl font-bold text-black dark:text-white">
-              {(
-                NFT_TIERS.find((t) => t.tokenId === tokenId)?.price ?? 0
-              ).toLocaleString("en-US") + " USDC"}
+              {isLoading && !claimCondition
+                ? "Loading..."
+                : claimCondition
+                  ? formatPrice(
+                      claimCondition.pricePerToken,
+                      claimCondition.currency,
+                    )
+                  : "Price unavailable"}
             </p>
             {claimCondition && (
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -398,11 +403,14 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
           {claimCondition && (
             <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
               {claimCondition.maxClaimableSupply > BigInt(0)
-                ? `${claimCondition.supplyClaimed.toString()} / ${claimCondition.maxClaimableSupply.toString()} claimed`
-                : "Open"}{" "}
-              ·{" "}
+                ? claimCondition.maxClaimableSupply.toString().length > 6 ||
+                  claimCondition.supplyClaimed.toString().length > 6
+                  ? "Limited"
+                  : `${claimCondition.supplyClaimed.toString()} / ${claimCondition.maxClaimableSupply.toString()} claimed`
+                : "Open"}
+              {" · "}
               {claimCondition.quantityLimitPerWallet > BigInt(0)
-                ? `Max ${claimCondition.quantityLimitPerWallet.toString()}/wallet`
+                ? "Per‑wallet limit applies"
                 : "No wallet limit"}
             </div>
           )}
@@ -496,12 +504,9 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
               <>
                 <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center">
                   Total:{" "}
-                  {NFT_TIERS.find((t) => t.tokenId === tokenId)?.price
-                    ? (
-                        NFT_TIERS.find((t) => t.tokenId === tokenId)!.price *
-                        quantity
-                      ).toLocaleString("en-US") + " USDC"
-                    : "—"}
+                  {totalPrice > BigInt(0)
+                    ? formatPrice(totalPrice, claimCondition.currency)
+                    : "Free"}
                 </div>
                 <div className="mt-3 text-xs text-gray-500 dark:text-gray-400 text-center">
                   <a href="/terms" className="underline hover:no-underline">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
@@ -40,6 +41,12 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
+      <Script id="intercom-settings" strategy="afterInteractive">
+        {`window.intercomSettings = { app_id: "qjd0ivm0" };`}
+      </Script>
+      <Script id="intercom-loader" strategy="afterInteractive">
+        {`(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic("reattach_activator");ic("update",w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement("script");s.type="text/javascript";s.async=true;s.src="https://widget.intercom.io/widget/qjd0ivm0";var x=d.getElementsByTagName("script")[0];x.parentNode.insertBefore(s,x)};if(d.readyState==="complete"){l()}else if(w.attachEvent){w.attachEvent("onload",l)}else{w.addEventListener("load",l,false)}}})();`}
+      </Script>
       <main className="min-h-screen bg-black">
         <Header />
         <Hero />
@@ -206,22 +213,6 @@ export default function Home() {
                   </li>
                 </ul>
               </div>
-            </div>
-
-            <div className="mt-8">
-              <h3 className="text-xl font-bold text-white mb-2">
-                Settlement & Redemption (High‑Level)
-              </h3>
-              <p className="text-gray-300">
-                If and when a Settlement Event occurs, and after legal review
-                and compliance clearance, SmartDeed may initiate an exchange
-                process under the SmartDeed. Payments, if any, are delivered by
-                the Escrow Agent or as specified in the Agreement to your
-                whitelisted wallet; alternate delivery methods may be offered at
-                the Company’s discretion with applicable fees/withholding. No
-                automatic conversion is promised; timing and mechanics are
-                governed by the Agreement and official notices.
-              </p>
             </div>
 
             <div className="mt-8">
