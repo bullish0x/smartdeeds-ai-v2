@@ -1,5 +1,14 @@
+import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { generateMetadata as generatePageMetadata } from '@/lib/metadata'
+
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Disclaimer - SmartDeeds',
+  description:
+    'Important disclaimer for SmartDeeds NFT membership tiers. Learn about investment risks, regulatory compliance, technology risks, tax implications, and limitations of liability. NFTs are highly speculative investments.',
+  path: '/disclaimer',
+})
 
 export default function DisclaimerPage() {
   return (

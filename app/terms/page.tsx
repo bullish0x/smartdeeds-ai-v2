@@ -1,6 +1,15 @@
+import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { MULTISIG_INFO } from '@/lib/constants'
+import { generateMetadata as generatePageMetadata } from '@/lib/metadata'
+
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Terms of Service - SmartDeeds',
+  description:
+    'Read the SmartDeeds Terms of Service. Learn about NFT membership tiers, Base network transactions, multi-signature wallet security, refund policies, KYC requirements, and intellectual property rights.',
+  path: '/terms',
+})
 
 export default function TermsPage() {
   return (
