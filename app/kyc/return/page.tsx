@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -9,7 +9,7 @@ import { checkVerificationStatus, type KycStatus } from '@/lib/kyc'
 const POLL_MS = 2500
 const POLL_TIMEOUT_MS = 2 * 60 * 1000 // 2 minutes
 
-export default function KycReturn() {
+function KycReturnContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -86,63 +86,89 @@ export default function KycReturn() {
   }, [searchParams, router])
 
   return (
-    <main className="min-h-screen bg-white dark:bg-black">
-      <Header />
-      <div className="pt-16 pb-20">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white mb-6">
-            Completing Verification…
-          </h1>
+    <div className="pt-16 pb-20">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white mb-6">
+          Completing Verification…
+        </h1>
 
-          {status === 'processing' && (
-            <div className="space-y-4">
-              <div className="inline-block w-16 h-16 border-4 border-yellowish border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-lg text-gray-700 dark:text-gray-300">
-                Your verification is being processed. This usually takes a moment.
+        {status === 'processing' && (
+          <div className="space-y-4">
+            <div className="inline-block w-16 h-16 border-4 border-yellowish border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-lg text-gray-700 dark:text-gray-300">
+              Your verification is being processed. This usually takes a moment.
+            </p>
+          </div>
+        )}
+
+        {status === 'requires_input' && (
+          <div className="space-y-4">
+            <p className="text-lg text-gray-700 dark:text-gray-300">
+              {msg || 'Verification requires additional information.'}
+            </p>
+            <a
+              href="/kyc/start"
+              className="inline-block bg-black dark:bg-white text-white dark:text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
+              Continue verification
+            </a>
+          </div>
+        )}
+
+        {status === 'error' && (
+          <div className="space-y-4">
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <p className="text-red-600 dark:text-red-400">
+                {msg || 'Something went wrong.'}
               </p>
             </div>
-          )}
+            <a
+              href="/kyc/start"
+              className="inline-block bg-black dark:bg-white text-white dark:text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
+              Try again
+            </a>
+          </div>
+        )}
 
-          {status === 'requires_input' && (
-            <div className="space-y-4">
-              <p className="text-lg text-gray-700 dark:text-gray-300">
-                {msg || 'Verification requires additional information.'}
-              </p>
-              <a
-                href="/kyc/start"
-                className="inline-block bg-black dark:bg-white text-white dark:text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-              >
-                Continue verification
-              </a>
-            </div>
-          )}
+        {status === 'none' && (
+          <div className="space-y-4">
+            <div className="inline-block w-16 h-16 border-4 border-yellowish border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-lg text-gray-700 dark:text-gray-300">
+              Checking your status…
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
-          {status === 'error' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <p className="text-red-600 dark:text-red-400">
-                  {msg || 'Something went wrong.'}
-                </p>
-              </div>
-              <a
-                href="/kyc/start"
-                className="inline-block bg-black dark:bg-white text-white dark:text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-              >
-                Try again
-              </a>
-            </div>
-          )}
-
-          {status === 'none' && (
-            <div className="space-y-4">
-              <div className="inline-block w-16 h-16 border-4 border-yellowish border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-lg text-gray-700 dark:text-gray-300">
-                Checking your status…
-              </p>
-            </div>
-          )}
+function LoadingFallback() {
+  return (
+    <div className="pt-16 pb-20">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white mb-6">
+          Completing Verification…
+        </h1>
+        <div className="space-y-4">
+          <div className="inline-block w-16 h-16 border-4 border-yellowish border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-lg text-gray-700 dark:text-gray-300">
+            Loading…
+          </p>
         </div>
       </div>
+    </div>
+  )
+}
+
+export default function KycReturn() {
+  return (
+    <main className="min-h-screen bg-white dark:bg-black">
+      <Header />
+      <Suspense fallback={<LoadingFallback />}>
+        <KycReturnContent />
+      </Suspense>
       <Footer />
     </main>
   )
