@@ -200,4 +200,3 @@ NEXT_PUBLIC_CALENDLY_LINK=https://calendly.com/contact-smartdeeds/smartdeeds-ai-
 ## License
 
 ISC
-
