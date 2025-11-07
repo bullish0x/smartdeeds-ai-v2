@@ -1,32 +1,26 @@
-import { MetadataRoute } from 'next'
-import { siteConfig } from '@/lib/metadata'
+import { MetadataRoute } from "next";
+import { siteConfig } from "@/lib/metadata";
 
-export const dynamic = 'force-static'
+export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = siteConfig.url
-  const currentDate = new Date()
+  const baseUrl = siteConfig.url;
+  const currentDate = new Date();
 
   return [
     {
       url: baseUrl,
       lastModified: currentDate,
-      changeFrequency: 'weekly',
+      changeFrequency: "weekly",
       priority: 1.0,
     },
     {
       url: `${baseUrl}/terms`,
       lastModified: currentDate,
-      changeFrequency: 'monthly',
+      changeFrequency: "monthly",
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/disclaimer`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    // KYC page is excluded from sitemap for privacy reasons
-  ]
-}
 
+    // KYC page is excluded from sitemap for privacy reasons
+  ];
+}

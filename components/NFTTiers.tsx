@@ -13,15 +13,15 @@ export default function SmartDeedsTiers() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            SmartDeeds Pre-Sale <span className="text-yellowish">Vouchers</span>
+            SmartDeeds Pre-Launch{" "}
+            <span className="text-yellowish">Vouchers</span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Select a presale Voucher tier. The Voucher is a presale instrument
-            only—no present membership or economic/property interest. At
-            go‑live, it is redeemed for a SmartDeed DAC at the applicable
-            Exchange Rate and your Global Digital Membership activates
-            (consumptive, non‑financial). Payments are made in USDC on Base;
-            bring your own wallet—we do not provide or custody wallets.
+            Select a pre‑launch Voucher tier. The Voucher is a pre‑launch
+            instrument—no present membership or economic rights. At Launch, it
+            becomes your SmartDeed and your non‑financial Membership benefits
+            activate. Funding is held in escrow and released at Launch; bring
+            your own wallet.
           </p>
         </div>
 

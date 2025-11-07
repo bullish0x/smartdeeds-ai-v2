@@ -11,7 +11,7 @@ const IMAGES = [
   "/images/gallery/2.jpg",
   "/images/gallery/3.jpg",
   "/images/gallery/4.jpg",
-  "/images/gallery/5.jpg",
+
   "/images/gallery/ProjectMalibu.webp",
 ].map(getImagePath);
 
@@ -77,24 +77,25 @@ export default function Hero() {
           your own wallet.
         </p>
 
-        <p className="text-lg md:text-xl text-gray-200 mb-6 max-w-3xl mx-auto leading-relaxed">
-          Get education, events, and behind-the-scenes content for the Malibu
-          oceanfront property designed by Tadao Ando and once owned by Kanye
-          West. If approved, you’ll follow Belwood Investments with private
-          renovation updates and real-time learning as the property is prepared
-          for market. Details are shared privately by invite.
-        </p>
-        <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          Minimum purchase starts at $1,000 (Gold) at a defined Exchange Rate
-          (per tier). At go‑live, your presale Voucher is redeemed for a
-          SmartDeed Digital Assignment Contract (DAC) that combines a minority
-          contractual economic assignment under a Forward Sale &amp; Exchange
-          Agreement (not title or governance) and a Global Digital Membership
-          Grant (consumptive, non‑financial) with exclusive access perks. Prior
-          to go‑live, Vouchers confer no membership privileges or economic
-          rights; no dividends, profit‑sharing, voting, or control rights are
-          granted.
-        </p>
+        <div className="mx-auto max-w-3xl rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-6 md:p-8 shadow-2xl">
+          <div className="flex flex-wrap gap-2 justify-center mb-4">
+            <span className="px-3 py-1 text-xs font-medium rounded-full bg-white/10 text-white/90">
+              Invite‑only
+            </span>
+            <span className="px-3 py-1 text-xs font-medium rounded-full bg-white/10 text-white/90">
+              Bring your own wallet
+            </span>
+          </div>
+          <ul className="text-base md:text-lg text-gray-200 leading-relaxed list-disc pl-6 space-y-2 text-left">
+            <li>Pre‑Launch Voucher starting at $1,000</li>
+            <li>
+              At Launch: Voucher converts to your SmartDeed — a digital
+              assignment recorded on‑chain that grants an economic interest in
+              Project Malibu plus membership access
+            </li>
+            <li>Before Launch: no membership or economic rights</li>
+          </ul>
+        </div>
 
         {/* Countdown or CTA */}
         <div className="mb-8 flex flex-col items-center justify-center gap-4">
@@ -120,10 +121,10 @@ export default function Hero() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="#booking"
+            href="#tiers"
             className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-black transition-colors"
           >
-            Book a Private Chat →
+            Purchase Now →
           </a>
         </div>
 

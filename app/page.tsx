@@ -53,14 +53,13 @@ export default function Home() {
                 Malibu Program
               </h2>
               <p className="text-xl text-gray-300 max-w-4xl mx-auto">
-                Welcome to SmartDeeds—invite-only access to the
-                multi-million-dollar residential market, secured on blockchain.
-                Get exclusive education, events, and behind-the-scenes access to
-                the Malibu oceanfront estate by Tadao Ando (formerly owned by
-                Kanye West). If approved, you’ll follow Belwood Investments
-                through the rehab and sale, with private renovation updates and
-                real-time learning as we prepare the property for market.
-                Details shared privately by invite.
+                Invite‑only access to Project Malibu. Purchase a pre‑launch
+                Voucher starting at $1,000 (Gold). At Launch, your Voucher
+                converts to your SmartDeed—an on‑chain digital assignment
+                granting a minority economic assignment (no title/governance)
+                plus non‑financial membership access. Funding is held in escrow
+                and released at Launch per the Agreement. Details shared
+                privately by invite.
               </p>
             </div>
 
@@ -157,25 +156,27 @@ export default function Home() {
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
                 <h3 className="text-xl font-bold text-white mb-2">
-                  Voucher & Go‑Live; DAC Issuance
+                  Voucher & Launch; SmartDeed Issuance
                 </h3>
                 <p className="text-gray-300 mb-4">
-                  This presale Voucher evidences only a paid reservation. No
-                  present rights are granted. At go‑live, your SmartDeed DAC is
-                  issued at the applicable Exchange Rate and your Global Digital
-                  Membership activates. Membership is consumptive and
-                  non‑financial.
+                  This pre‑launch Voucher NFT evidences only a paid reservation.
+                  No present rights are granted. At Launch, your SmartDeed NFT
+                  (on‑chain digital assignment granting a minority economic
+                  assignment—no title/governance—plus non‑financial membership
+                  access) is issued at the applicable Exchange Rate and your
+                  Global Digital Membership activates. Membership is consumptive
+                  and non‑financial.
                 </p>
                 <ul className="list-disc list-inside text-gray-300 space-y-1">
                   <li>
-                    Voucher: presale instrument only; no membership privileges
-                    or economic/property interest until go‑live and DAC
-                    issuance.
+                    Voucher: pre‑launch instrument only; no membership
+                    privileges or economic/property interest until Launch and
+                    SmartDeed issuance.
                   </li>
                   <li>
-                    Exchange at Go‑Live: Presale Amount × Exchange Rate
-                    determines your DAC interest; recorded on the Base network.
-                    The Canonical Registry controls.
+                    Exchange at Launch: Pre‑Launch Commitment × Exchange Rate
+                    determines your SmartDeed interest; recorded on the Chain of
+                    Record. The Canonical Registry controls.
                   </li>
                   <li>
                     Membership: consumptive access benefits; no dividends,
@@ -214,11 +215,12 @@ export default function Home() {
               <p className="text-gray-300">
                 If and when a Settlement Event occurs, and after legal review
                 and compliance clearance, SmartDeed may initiate an exchange
-                process under the DAC. Payments, if any, are intended to be
-                delivered in USDC on Base to your whitelisted wallet; alternate
-                rails may be offered at the Company’s discretion with applicable
-                fees/withholding. No automatic conversion is promised; timing
-                and mechanics are governed by program terms and notices.
+                process under the SmartDeed. Payments, if any, are delivered by
+                the Escrow Agent or as specified in the Agreement to your
+                whitelisted wallet; alternate delivery methods may be offered at
+                the Company’s discretion with applicable fees/withholding. No
+                automatic conversion is promised; timing and mechanics are
+                governed by the Agreement and official notices.
               </p>
             </div>
 
@@ -241,9 +243,8 @@ export default function Home() {
                   sanctions screening.
                 </li>
                 <li>
-                  On-chain operations and any distributions (if applicable) are
-                  intended to use USDC on the Base network unless otherwise
-                  stated in official notices.
+                  On‑chain records and any distributions (if applicable) follow
+                  the Agreement and official notices.
                 </li>
               </ul>
             </div>

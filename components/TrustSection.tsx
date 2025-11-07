@@ -30,13 +30,9 @@ export default function TrustSection() {
           </p>
 
           <p className="text-lg text-gray-300">
-            SmartDeeds is membership‑first. At go‑live, holders receive a
-            SmartDeed Digital Assignment Contract (DAC) that combines: (i) a
-            contractual minority economic assignment under a Forward Sale &
-            Exchange Agreement (not title or governance) and (ii) a Global
-            Digital Membership Grant (consumptive, non‑financial). State is
-            recorded on a public blockchain (Base) via a canonical registry.
-            Full details are shared privately by invite.
+            SmartDeeds is membership‑first. At Launch, your SmartDeed is an
+            on‑chain smart contract that grants a minority economic interest in
+            Project Malibu plus membership access.
           </p>
 
           {/* Company Logos */}
