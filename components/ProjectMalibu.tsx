@@ -137,9 +137,13 @@ export default function ProjectMalibu() {
               </div>
 
               <div className="pt-4 border-t border-gray-800">
-                <p className="text-sm text-gray-400 mb-4">
+                <p className="text-sm text-gray-400 mb-2">
                   Your exchange value depends on your tier multiplier and is
-                  subject to market risk. Full terms in detail.
+                  subject to market risk. See full terms.
+                </p>
+                <p className="text-xs text-gray-400 mb-4">
+                  Photos depict intended restored appearance; current condition
+                  may differ. See terms.
                 </p>
                 <p className="text-base text-white font-medium">
                   Join the membership and purchase this project.
