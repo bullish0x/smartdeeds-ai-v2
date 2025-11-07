@@ -52,6 +52,35 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '100%': { backgroundPosition: '100% 50%' },
+        },
+        caustics1: {
+          '0%': { transform: 'translate(0, 0) scale(1)' },
+          '33%': { transform: 'translate(30px, -30px) scale(1.1)' },
+          '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+          '100%': { transform: 'translate(0, 0) scale(1)' },
+        },
+        caustics2: {
+          '0%': { transform: 'translate(0, 0) scale(1)' },
+          '33%': { transform: 'translate(-40px, 40px) scale(0.8)' },
+          '66%': { transform: 'translate(40px, -40px) scale(1.2)' },
+          '100%': { transform: 'translate(0, 0) scale(1)' },
+        },
+        caustics3: {
+          '0%': { transform: 'translate(0, 0) scale(1)' },
+          '50%': { transform: 'translate(20px, 30px) scale(1.15)' },
+          '100%': { transform: 'translate(0, 0) scale(1)' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 15s linear infinite',
+        caustics1: 'caustics1 8s ease-in-out infinite',
+        caustics2: 'caustics2 12s ease-in-out infinite',
+        caustics3: 'caustics3 10s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

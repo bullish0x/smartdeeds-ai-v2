@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import '../styles/globals.css'
-import { ThemeProvider } from '@/components/ThemeProvider'
-import { ThirdwebProvider } from '@/components/ThirdwebProvider'
-import { Toaster } from '@/components/ui/toaster'
+import { Providers } from '@/components/Providers'
 
 export const metadata: Metadata = {
   title: 'SmartDeeds - NFT Membership Tiers',
@@ -16,15 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="dark">
-      <body>
-        <ThirdwebProvider>
-          <ThemeProvider>
-            {children}
-            <Toaster />
-          </ThemeProvider>
-        </ThirdwebProvider>
+      <body suppressHydrationWarning>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
 }
-

@@ -47,7 +47,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {!mounted ? <div suppressHydrationWarning>{children}</div> : children}
+      {children}
     </ThemeContext.Provider>
   )
 }

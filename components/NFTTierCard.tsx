@@ -401,21 +401,29 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
             <input
               type="number"
               min="1"
-              max={claimCondition?.quantityLimitPerWallet ? Number(claimCondition.quantityLimitPerWallet) : undefined}
+              max={claimCondition?.quantityLimitPerWallet && claimCondition.quantityLimitPerWallet > BigInt(0) 
+                ? Number(claimCondition.quantityLimitPerWallet) 
+                : undefined}
               value={quantity}
               onChange={(e) => {
                 const val = parseInt(e.target.value) || 1
-                const max = claimCondition?.quantityLimitPerWallet ? Number(claimCondition.quantityLimitPerWallet) : undefined
+                const max = claimCondition?.quantityLimitPerWallet && claimCondition.quantityLimitPerWallet > BigInt(0)
+                  ? Number(claimCondition.quantityLimitPerWallet)
+                  : undefined
                 setQuantity(max ? Math.min(val, max) : Math.max(1, val))
               }}
               className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded text-center text-black dark:text-white bg-white dark:bg-gray-800"
             />
             <button
               onClick={() => {
-                const max = claimCondition?.quantityLimitPerWallet ? Number(claimCondition.quantityLimitPerWallet) : undefined
+                const max = claimCondition?.quantityLimitPerWallet && claimCondition.quantityLimitPerWallet > BigInt(0)
+                  ? Number(claimCondition.quantityLimitPerWallet)
+                  : undefined
                 setQuantity(max ? Math.min(quantity + 1, max) : quantity + 1)
               }}
-              disabled={claimCondition?.quantityLimitPerWallet ? quantity >= Number(claimCondition.quantityLimitPerWallet) : false}
+              disabled={claimCondition?.quantityLimitPerWallet && claimCondition.quantityLimitPerWallet > BigInt(0)
+                ? quantity >= Number(claimCondition.quantityLimitPerWallet)
+                : false}
               className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
             >
               +

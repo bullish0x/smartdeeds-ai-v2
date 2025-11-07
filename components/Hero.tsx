@@ -1,69 +1,85 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import Image from 'next/image'
 import CountdownTimer from './CountdownTimer'
 
-export default function Hero() {
-  const [particles, setParticles] = useState<Array<{ x: number; y: number; size: number }>>([])
-  const [timerExpired, setTimerExpired] = useState(false)
+const IMAGES = [
+  '/images/gallery/1.jpg',
+  '/images/gallery/2.jpg',
+  '/images/gallery/3.jpg',
+  '/images/gallery/4.jpg',
+  '/images/gallery/5.jpg',
+  '/images/gallery/ProjectMalibu.webp',
+]
 
-  // Set target date for countdown - 8 days from today (11/6/2025)
-  const launchDate = '2025-11-14T00:00:00Z' // November 14, 2025
+export default function Hero() {
+  const [index, setIndex] = useState(0)
+  const [timerExpired, setTimerExpired] = useState(false)
+  const launchDate = '2025-11-14T00:00:00Z'
 
   useEffect(() => {
-    // Check if timer is already expired on mount
     const difference = new Date(launchDate).getTime() - new Date().getTime()
-    if (difference <= 0) {
-      setTimerExpired(true)
-    } else {
-      setTimerExpired(false)
-    }
+    setTimerExpired(difference <= 0)
 
-    // Create particles for background effect
-    const newParticles = Array.from({ length: 50 }, () => ({
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-    }))
-    setParticles(newParticles)
+    // Cycle background images every 6 seconds
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % IMAGES.length)
+    }, 6000)
+    return () => clearInterval(interval)
   }, [])
 
-  const handleTimerExpired = () => {
-    setTimerExpired(true)
-  }
+  const handleTimerExpired = () => setTimerExpired(true)
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-32">
-      {/* Background Particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {particles.map((particle, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-yellowish opacity-20 dark:opacity-30 animate-float"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              animationDelay: `${i * 0.1}s`,
-            }}
-          ></div>
-        ))}
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-24">
+      {/* Background slideshow */}
+      {IMAGES.map((src, i) => (
+        <motion.div
+          key={i}
+          className="absolute inset-0"
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ 
+            opacity: i === index ? 1 : 0,
+            scale: i === index ? 1 : 1.05
+          }}
+          transition={{ duration: 6, ease: 'easeOut' }}
+        >
+          <Image
+            src={src}
+            alt={`Malibu ${i}`}
+            fill
+            priority={i === 0}
+            className="object-cover object-center brightness-75"
+          />
+        </motion.div>
+      ))}
+
+      {/* Dark overlay for contrast */}
+      <div className="absolute inset-0 bg-black/40 z-[1]" />
 
       {/* Hero Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in">
-        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-          Join the New Era of <span className="text-yellowish">Real Estate Ownership</span>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.5, ease: 'easeOut' }}
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+      >
+        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
+          Join the New Era of{' '}
+          <span className="text-yellowish">Real Estate Ownership</span>
         </h1>
-        <p className="text-xl md:text-2xl text-yellowish italic mb-6 max-w-3xl mx-auto">
+
+        <p className="text-xl md:text-2xl text-yellowish italic mb-6 max-w-3xl mx-auto drop-shadow-md">
           Welcome to SmartDeeds—invite-only access to the multi-million-dollar residential market, secured on blockchain.
         </p>
-        <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-          Get exclusive education, events, and behind-the-scenes access to the Malibu oceanfront estate by Tadao Ando (formerly owned by Kanye West). If approved, you&apos;ll join Belwood Investments through the rehab and sale, with private renovation updates and real-time learning as we prepare the property for market. Details shared privately by invite.
+
+        <p className="text-lg md:text-xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed">
+          Get exclusive education, events, and behind-the-scenes access to the Malibu oceanfront estate by Tadao Ando (formerly owned by Kanye West). If approved, you'll join Belwood Investments through the rehab and sale, with private renovation updates and real-time learning as we prepare the property for market. Details shared privately by invite.
         </p>
-        
-        {/* Timer or Pre-Sale Button */}
+
+        {/* Countdown or CTA */}
         <div className="mb-8 flex flex-col items-center justify-center gap-4">
           {!timerExpired ? (
             <>
@@ -88,10 +104,11 @@ export default function Hero() {
             Book a Private Chat →
           </a>
         </div>
+
         <p className="text-sm text-gray-400 mt-6">
           Exclusive early access. Limited invites remaining.
         </p>
-      </div>
+      </motion.div>
     </section>
   )
 }

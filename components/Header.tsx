@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { ConnectButton } from 'thirdweb/react'
 import { base } from 'thirdweb/chains'
 import { getThirdwebClient } from '@/lib/thirdweb-client'
-import LanguageSelector from './LanguageSelector'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -22,7 +21,7 @@ export default function Header() {
   }, [])
 
   return (
-    <header className="fixed top-10 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
@@ -56,7 +55,6 @@ export default function Header() {
             <Link href="/kyc" className="text-white hover:text-yellowish transition-colors">
               KYC
             </Link>
-            <LanguageSelector />
             {client && (
               <div className="scale-90 origin-right" style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px', fontSize: '12px', padding: '4px 8px' }}>
                 <ConnectButton client={client} chain={base} />
@@ -66,7 +64,6 @@ export default function Header() {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
-            <LanguageSelector />
             {client && (
               <div className="scale-90" style={{ backgroundColor: '#EEFE93', color: '#000000', borderRadius: '8px', fontSize: '12px', padding: '4px 8px' }}>
                 <ConnectButton client={client} chain={base} />
