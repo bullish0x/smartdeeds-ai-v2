@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="text-xl font-bold mb-4">SmartDeeds</h3>
             <p className="text-gray-400 text-sm">
-              SmartDeeds membership tiers on Base network.
+              SmartDeed™ NFT and Membership Pre‑Sale (invite‑only).
             </p>
           </div>
 
@@ -45,14 +45,7 @@ export default function Footer() {
                   Terms of Service
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/disclaimer"
-                  className="text-gray-400 hover:text-yellowish transition-colors"
-                >
-                  Disclaimer
-                </Link>
-              </li>
+
               <li>
                 <Link
                   href="/kyc"
@@ -65,10 +58,12 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Network</h4>
-            <p className="text-gray-400 text-sm">Base Network</p>
+            <h4 className="font-semibold mb-4">Program</h4>
+            <p className="text-gray-400 text-sm">
+              Escrowed funding (per Agreement)
+            </p>
             <p className="text-gray-400 text-sm mt-2">
-              Multi-sig wallet for fund security
+              Voucher NFT converts to SmartDeed NFT at Launch
             </p>
           </div>
         </div>

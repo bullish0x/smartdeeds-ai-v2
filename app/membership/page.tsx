@@ -4,9 +4,9 @@ import Footer from "@/components/Footer";
 import { generateMetadata as generatePageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Membership & Pre‑Sale Commitment Agreement (U.S.) - SmartDeeds",
+  title: "Membership & Pre‑Launch Commitment Agreement (U.S.) - SmartDeeds",
   description:
-    "SMARTDEED Membership & Pre‑Sale Commitment Agreement (U.S.) for invited applicants. Private membership terms, pre‑sale commitment and escrow, confidentiality, SmartDeed digital primacy, governing law, dispute resolution, and schedules.",
+    "SMARTDEED Membership & Pre‑Launch Commitment Agreement (U.S.) for invited applicants. Private membership terms, pre‑launch commitment and escrow, confidentiality, SmartDeed digital primacy, governing law, dispute resolution, and schedules.",
   path: "/membership",
 });
 
@@ -21,11 +21,10 @@ export default function MembershipPage() {
           </h1>
           <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
             Invite‑only access to Project Malibu — on a public blockchain. Bring
-            your own wallet. At go‑live, presale Vouchers are redeemed for a
-            SmartDeed Digital Assignment Contract (DAC) issued at the tier’s
-            Exchange Rate. The DAC combines a contractual minority economic
-            assignment (not title/governance) and a Global Digital Membership
-            (consumptive, non‑financial).
+            your own wallet. At Launch, pre‑launch Vouchers convert to your
+            SmartDeed — an on‑chain digital assignment that grants a minority
+            economic assignment plus Membership access at the tier’s Exchange
+            Rate.
           </p>
 
           <div className="mb-6 flex flex-wrap gap-3">
@@ -33,7 +32,7 @@ export default function MembershipPage() {
               href="/terms"
               className="text-yellowish underline hover:no-underline"
             >
-              Read Presale Terms →
+              Read Pre‑Launch Terms →
             </a>
           </div>
 

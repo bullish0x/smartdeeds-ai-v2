@@ -11,7 +11,7 @@ const IMAGES = [
   "/images/gallery/2.jpg",
   "/images/gallery/3.jpg",
   "/images/gallery/4.jpg",
-  "/images/gallery/5.jpg",
+
   "/images/gallery/ProjectMalibu.webp",
 ].map(getImagePath);
 
@@ -80,9 +80,6 @@ export default function Hero() {
         <div className="mx-auto max-w-3xl rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm p-6 md:p-8 shadow-2xl">
           <div className="flex flex-wrap gap-2 justify-center mb-4">
             <span className="px-3 py-1 text-xs font-medium rounded-full bg-white/10 text-white/90">
-              USDC on Base
-            </span>
-            <span className="px-3 py-1 text-xs font-medium rounded-full bg-white/10 text-white/90">
               Invite‑only
             </span>
             <span className="px-3 py-1 text-xs font-medium rounded-full bg-white/10 text-white/90">
@@ -90,13 +87,13 @@ export default function Hero() {
             </span>
           </div>
           <ul className="text-base md:text-lg text-gray-200 leading-relaxed list-disc pl-6 space-y-2 text-left">
-            <li>Presale Voucher starting at $1,000 (Gold)</li>
+            <li>Pre‑Launch Voucher starting at $1,000</li>
             <li>
-              At go‑live: Voucher converts to a SmartDeed (DAC) — minority
-              contractual economic assignment (no title/governance) +
-              non‑financial membership access
+              At Launch: Voucher converts to your SmartDeed — a digital
+              assignment recorded on‑chain that grants an economic interest in
+              Project Malibu plus membership access
             </li>
-            <li>Before go‑live: no membership or economic rights</li>
+            <li>Before Launch: no membership or economic rights</li>
           </ul>
         </div>
 

@@ -235,12 +235,12 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
 
       console.log("Transaction successful:", receipt);
       setTxHash(receipt.transactionHash);
-      const successMessage = `Successfully minted ${quantity} SmartDeed${quantity > 1 ? "s" : ""}!`;
+      const successMessage = `Successfully purchased ${quantity} SmartDeed${quantity > 1 ? "s" : ""}!`;
       setSuccess(successMessage);
 
       // Show success toast
       toast({
-        title: "Mint Successful!",
+        title: "Purchase Successful!",
         description: successMessage,
         variant: "default",
       });
@@ -248,8 +248,8 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
       console.error("Mint error:", err);
 
       // Provide more helpful error messages
-      let errorMessage = "Failed to mint NFT. Please try again.";
-      let errorTitle = "Mint Failed";
+      let errorMessage = "Failed to purchase. Please try again.";
+      let errorTitle = "Purchase Failed";
 
       // Handle wallet cancellation/rejection
       const errorString = JSON.stringify(err).toLowerCase();
@@ -293,7 +293,7 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
         } else if (err.message.includes("claim condition")) {
           errorTitle = "Claim Conditions Not Met";
           errorMessage =
-            "Please check if this SmartDeed is available for minting.";
+            "Please check if this SmartDeed is available for purchase.";
         } else {
           errorMessage = err.message;
         }
@@ -527,12 +527,12 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
             {!contract
               ? "Initializing..."
               : !account
-                ? "Connect Wallet to Mint"
+                ? "Connect Wallet to Purchase"
                 : chain?.id !== base.id
                   ? "Switch to Base Network"
                   : isClaiming
                     ? "Processing Transaction..."
-                    : `Mint ${quantity} SmartDeed${quantity > 1 ? "s" : ""}`}
+                    : `Purchase ${quantity} SmartDeed${quantity > 1 ? "s" : ""}`}
           </button>
         </div>
       </div>

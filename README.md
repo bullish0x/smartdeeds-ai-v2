@@ -8,7 +8,7 @@ A Next.js application recreating the SmartDeeds.ai Version 1 website with SmartD
 - **Base Network**: All transactions processed on Base network
 - **Blockchain Integration**: Thirdweb SDK for wallet connections and NFT interactions
 - **Multi-Signature Wallet**: Funds secured in multi-sig wallets
-- **Legal Pages**: Terms of Service, Disclaimer, and KYC pages
+- **Legal Pages**: Terms of Service and KYC pages
 - **SEO Optimized**: Robots.txt, sitemap.xml, and structured data (JSON-LD)
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 - **Color Palette**: Yellowish (#EEFE93), Black, and White
@@ -61,7 +61,7 @@ smartdeeds.ai-v2/
 │   ├── robots.ts             # Robots.txt configuration
 │   ├── sitemap.ts            # Sitemap.xml generation
 │   ├── terms/                 # Terms of Service page
-│   ├── disclaimer/           # Disclaimer page
+
 │   └── kyc/                  # KYC page
 ├── components/
 │   ├── Header.tsx            # Navigation header with wallet connection
