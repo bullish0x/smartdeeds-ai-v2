@@ -1,10 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+
 
 export default function KYCPage() {
+  const router = useRouter()
+  const kycEnabled = process.env.NEXT_PUBLIC_KYC_ENABLED === 'true'
+
+  // Redirect to /kyc/start if KYC feature is enabled
+  useEffect(() => {
+    if (kycEnabled) {
+      router.push('/kyc/start')
+    }
+  }, [kycEnabled, router])
+
+  // If KYC is enabled, return null while redirecting
+  if (kycEnabled) {
+    return null
+  }
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",

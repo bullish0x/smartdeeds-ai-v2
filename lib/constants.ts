@@ -12,13 +12,12 @@ export interface NFTTier {
 // Pre-sale Vouchers (NFT Tiers)
 export const NFT_TIERS: NFTTier[] = [
   {
-    id: "founder",
-    name: "Founder",
-    price: 1000000,
-    priceFormatted: "$1,000,000",
-    image: "/images/Founder.png",
-    description:
-      "Exclusive Founder tier membership with premium access and benefits.",
+    id: 'founder',
+    name: 'Founder',
+    price: 300000,
+    priceFormatted: '$300,000',
+    image: '/images/Founder.png',
+    description: 'Exclusive Founder tier membership with premium access and benefits.',
     benefits: [
       "All Diamond benefits",
       "Exclusive Founders Summit",
@@ -73,51 +72,25 @@ export const NFT_TIERS: NFTTier[] = [
   },
 ];
 
-// Helper function to get required env var
-function requireEnv(value: string | undefined, key: string): string {
-  if (!value) {
-    throw new Error(
-      `${key} is required. Please set it in your .env.local file.`,
-    );
-  }
-  return value;
-}
-
-// Contract configuration
+// Contract configuration with fallback values
 export const CONTRACT_CONFIG = {
-  address: requireEnv(
-    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-    "NEXT_PUBLIC_CONTRACT_ADDRESS",
-  ),
-  chainId: parseInt(
-    requireEnv(process.env.NEXT_PUBLIC_CHAIN_ID, "NEXT_PUBLIC_CHAIN_ID"),
-  ),
+  address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x12CE7BD130aaACc49e6b2C7d23e41e145D99BBB6',
+  chainId: process.env.NEXT_PUBLIC_CHAIN_ID ? parseInt(process.env.NEXT_PUBLIC_CHAIN_ID) : 8453, // Base mainnet
 };
 
 export const MULTISIG_INFO = {
-  network: process.env.NEXT_PUBLIC_NETWORK_NAME || "Base",
-  description:
-    process.env.NEXT_PUBLIC_MULTISIG_DESCRIPTION ||
-    "All funds are held in a multi-signature wallet for security and refund purposes.",
+  network: 'Base',
+  description: 'All funds are held in a multi-signature wallet for security and refund purposes.',
 };
 
 export const COMPANY_INFO = {
-  name: process.env.NEXT_PUBLIC_COMPANY_NAME || "SmartDeeds",
-  founded:
-    process.env.NEXT_PUBLIC_COMPANY_FOUNDED ||
-    "Solslot.com, Bestia AI, Belwood Investments",
-  assets:
-    process.env.NEXT_PUBLIC_COMPANY_ASSETS ||
-    "$150M+ in assets under management",
-  mentions: process.env.NEXT_PUBLIC_COMPANY_MENTIONS
-    ? process.env.NEXT_PUBLIC_COMPANY_MENTIONS.split(",").map((m) => m.trim())
-    : ["The Wall Street Journal", "The Real Deal"],
+  name: 'SmartDeeds',
+  founded: 'Solslot.com, Bestia AI, Belwood Investments',
+  assets: '$150M+ in assets under management',
+  mentions: ['The Wall Street Journal', 'The Real Deal'],
 };
 
-export const CALENDLY_LINK = requireEnv(
-  process.env.NEXT_PUBLIC_CALENDLY_LINK,
-  "NEXT_PUBLIC_CALENDLY_LINK",
-);
+export const CALENDLY_LINK = 'https://calendly.com/contact-smartdeeds/smartdeeds-ai-private-membership';
 
 export const PROJECT_MALIBU = {
   name: "Project Malibu",
@@ -125,3 +98,69 @@ export const PROJECT_MALIBU = {
   description:
     "The iconic Malibu oceanfront property designed by Tadao Ando and once owned by Kanye West.",
 };
+
+export interface MalibuTier {
+  id: string;
+  name: string;
+  price: number;
+  priceFormatted: string;
+  exchangeRateMultiplier: string;
+  benefits: string[];
+}
+
+export const MALIBU_TIERS: MalibuTier[] = [
+  {
+    id: 'gold',
+    name: 'GOLD — Insider Tier',
+    price: 1000,
+    priceFormatted: '$1,000',
+    exchangeRateMultiplier: '1.2×',
+    benefits: [
+      'Exchange Rate Multiplier: 1.2×',
+      'One private guided day at the Malibu Estate',
+      'Property tour, architecture briefing',
+      'Private networking mixer',
+    ],
+  },
+  {
+    id: 'platinum',
+    name: 'PLATINUM — Social Tier',
+    price: 10000,
+    priceFormatted: '$10,000',
+    exchangeRateMultiplier: '1.25×',
+    benefits: [
+      'Exchange Rate Multiplier: 1.25×',
+      'All Gold benefits',
+      '2 annual Malibu Member Days (sunset receptions, curated talks, private guest access)',
+    ],
+  },
+  {
+    id: 'diamond',
+    name: 'DIAMOND — Estate Tier',
+    price: 100000,
+    priceFormatted: '$100,000',
+    exchangeRateMultiplier: '1.3×',
+    benefits: [
+      'Exchange Rate Multiplier: 1.3×',
+      'All Platinum benefits',
+      '4 Private Estate Sessions annually (half-day hosted experiences for dinners, creative gatherings, or brand showcases up to 12 guests)',
+      '1 chef dinner',
+      'Concierge scheduling included',
+    ],
+  },
+  {
+    id: 'founders-circle',
+    name: 'FOUNDERS CIRCLE — Legacy Tier (Invitation Only)',
+    price: 300000,
+    priceFormatted: '$300,000',
+    exchangeRateMultiplier: '1.33×',
+    benefits: [
+      'Exchange Rate Multiplier: 1.33×',
+      'All Diamond benefits',
+      'Exclusive Founders Summit',
+      'Name recognition at the property',
+      'Special co-branding privileges',
+      'Voucher & Go‑Live; DAC Issuance',
+    ],
+  },
+];
