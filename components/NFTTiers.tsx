@@ -1,28 +1,34 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { NFT_TIERS } from '@/lib/constants'
-import NFTTierCard from './NFTTierCard'
-import SwapWidgetSection from './SwapWidget'
+import { useState } from "react";
+import { NFT_TIERS } from "@/lib/constants";
+import NFTTierCard from "./NFTTierCard";
+import SwapWidgetSection from "./SwapWidget";
 
-export default function NFTTiers() {
-  const [showSwapWidget, setShowSwapWidget] = useState(false)
+export default function SmartDeedsTiers() {
+  const [showSwapWidget, setShowSwapWidget] = useState(false);
 
   return (
     <section id="tiers" className="py-20 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Pre-Sale <span className="text-yellowish">Vouchers</span>
+            SmartDeeds Pre-Sale <span className="text-yellowish">Vouchers</span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Choose your pre-sale voucher tier. All funds are held in a multi-signature wallet
-            on the Base network for security and refund purposes.
+            Select a presale Voucher tier. The Voucher is a presale instrument
+            only—no present membership or economic/property interest. At
+            go‑live, it is redeemed for a SmartDeed DAC at the applicable
+            Exchange Rate and your Global Digital Membership activates
+            (consumptive, non‑financial). Payments are made in USDC on Base;
+            bring your own wallet—we do not provide or custody wallets.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {NFT_TIERS.filter((tier) => tier.tokenId >= 0 && tier.tokenId <= 3).map((tier) => (
+          {NFT_TIERS.filter(
+            (tier) => tier.tokenId >= 0 && tier.tokenId <= 3,
+          ).map((tier) => (
             <NFTTierCard key={tier.id} tokenId={tier.tokenId} />
           ))}
         </div>
@@ -73,7 +79,8 @@ export default function NFTTiers() {
                   Swap & <span className="text-yellowish">Buy Tokens</span>
                 </h3>
                 <p className="text-gray-300 max-w-2xl mx-auto">
-                  Need tokens before minting? Swap existing tokens or buy directly with a credit card on the Base network.
+                  Need tokens before minting? Swap existing tokens or buy
+                  directly with a credit card on the Base network.
                 </p>
               </div>
               <SwapWidgetSection />
@@ -81,12 +88,11 @@ export default function NFTTiers() {
           )}
 
           <p className="text-sm text-gray-400">
-            * All purchases are subject to KYC verification and terms of service.
-            Payments are processed on the Base network.
+            * All purchases are subject to KYC verification and terms of
+            service. Payments are processed on the Base network.
           </p>
         </div>
       </div>
     </section>
-  )
+  );
 }
-

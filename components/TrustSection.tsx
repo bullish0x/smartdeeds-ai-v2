@@ -1,8 +1,8 @@
-import { Fragment } from 'react'
-import { COMPANY_INFO } from '@/lib/constants'
-import { COMPANIES } from '@/lib/companies'
-import Image from 'next/image'
-import { getImagePath } from '@/lib/utils'
+import { Fragment } from "react";
+import { COMPANY_INFO } from "@/lib/constants";
+import { COMPANIES } from "@/lib/companies";
+import Image from "next/image";
+import { getImagePath } from "@/lib/utils";
 
 export default function TrustSection() {
   return (
@@ -10,28 +10,33 @@ export default function TrustSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Built by Proven{' '}
-            <span className="text-yellowish">Real Estate</span> Innovators
+            Built by Proven <span className="text-yellowish">Real Estate</span>{" "}
+            Innovators
           </h2>
         </div>
 
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <p className="text-lg text-gray-300">
-            SmartDeeds is founded by the team behind{' '}
-            <strong>{COMPANY_INFO.founded}</strong>—with over{' '}
-            <strong>{COMPANY_INFO.assets}</strong> and features in{' '}
+            SmartDeeds is founded by the team behind{" "}
+            <strong>{COMPANY_INFO.founded}</strong>—with over{" "}
+            <strong>{COMPANY_INFO.assets}</strong> and features in{" "}
             {COMPANY_INFO.mentions.map((mention, index, array) => (
               <Fragment key={index}>
                 <em>{mention}</em>
-                {index < array.length - 1 && ' and '}
+                {index < array.length - 1 && " and "}
               </Fragment>
-            ))}.
+            ))}
+            .
           </p>
 
           <p className="text-lg text-gray-300">
-            SmartDeeds is an economic interest in real estate property and membership
-            passes recorded on a public blockchain, with rights secured on title and
-            on-chain alongside Belwood. Full details shared privately by invite.
+            SmartDeeds is membership‑first. At go‑live, holders receive a
+            SmartDeed Digital Assignment Contract (DAC) that combines: (i) a
+            contractual minority economic assignment under a Forward Sale &
+            Exchange Agreement (not title or governance) and (ii) a Global
+            Digital Membership Grant (consumptive, non‑financial). State is
+            recorded on a public blockchain (Base) via a canonical registry.
+            Full details are shared privately by invite.
           </p>
 
           {/* Company Logos */}
@@ -51,7 +56,9 @@ export default function TrustSection() {
                     unoptimized
                   />
                 ) : (
-                  <span className="text-white font-semibold text-sm">{company.name}</span>
+                  <span className="text-white font-semibold text-sm">
+                    {company.name}
+                  </span>
                 )}
               </div>
             ))}
@@ -59,5 +66,5 @@ export default function TrustSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

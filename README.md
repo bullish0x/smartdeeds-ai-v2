@@ -1,6 +1,6 @@
 # SmartDeeds.ai V2 - Next.js Application
 
-A Next.js application recreating the SmartDeeds.ai Version 1 website with NFT membership tiers showcase and blockchain integration.
+A Next.js application recreating the SmartDeeds.ai Version 1 website with SmartDeeds membership tiers showcase and blockchain integration.
 
 ## Features
 
