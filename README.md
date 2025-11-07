@@ -119,10 +119,26 @@ smartdeeds.ai-v2/
 
 ## Build
 
+This app is configured for **static export** (client-side only). After building, you'll get a static `out/` directory that can be deployed to any static hosting service (Vercel, Netlify, GitHub Pages, AWS S3, etc.).
+
 ```bash
 npm run build
-npm start
 ```
+
+The build will generate a static site in the `out/` directory. You can serve it with any static file server:
+
+```bash
+# Using a simple HTTP server (install globally: npm install -g http-server)
+npx http-server out
+
+# Or using Python
+cd out && python -m http.server 3000
+
+# Or using Node.js serve
+npx serve out
+```
+
+> **Note**: The `npm start` command won't work with static export since there's no Next.js server. Use one of the static server options above or deploy to a static hosting service.
 
 ## Development
 
@@ -133,7 +149,7 @@ npm run lint
 
 ## Environment Variables
 
-Create a `.env.local` file in the root directory (you can copy from `.env.local.example`):
+Create a `.env` file in the root directory (you can copy from `.env.local.example`):
 
 ```env
 # Site Configuration
@@ -144,20 +160,20 @@ NEXT_PUBLIC_THIRDWEB_CLIENT_ID=your_thirdweb_client_id
 NEXT_PUBLIC_THIRDWEB_PROJECT_ID=your_thirdweb_project_id
 
 # Contract Configuration (Base Network)
-NEXT_PUBLIC_CONTRACT_ADDRESS=0x12CE7BD130aaACc49e6b2C7d23e41e145D99BBB6
+NEXT_PUBLIC_CONTRACT_ADDRESS=
 NEXT_PUBLIC_CHAIN_ID=8453
 ```
 
 ### Required Variables
 
 - `NEXT_PUBLIC_THIRDWEB_CLIENT_ID` - **Required**: Your Thirdweb Client ID. Get one from [thirdweb.com](https://thirdweb.com)
-- `NEXT_PUBLIC_SITE_URL` - Optional: Site URL for SEO metadata (defaults to `https://smartdeeds.ai`)
+- `NEXT_PUBLIC_SITE_URL` - Site URL for SEO metadata (defaults to `https://smartdeeds.ai`)
 
 ### Optional Variables
 
-- `NEXT_PUBLIC_THIRDWEB_PROJECT_ID` - Optional: Your Thirdweb Project ID
-- `NEXT_PUBLIC_CONTRACT_ADDRESS` - Optional: Smart contract address (defaults to the provided address)
-- `NEXT_PUBLIC_CHAIN_ID` - Optional: Blockchain network ID (defaults to `8453` for Base mainnet)
+- `NEXT_PUBLIC_THIRDWEB_PROJECT_ID` - Your Thirdweb Project ID
+- `NEXT_PUBLIC_CONTRACT_ADDRESS` - OSmart contract address (defaults to the provided address)
+- `NEXT_PUBLIC_CHAIN_ID` - Blockchain network ID (defaults to `8453` for Base mainnet)
 
 > **Note**: All `NEXT_PUBLIC_*` variables are exposed to the browser. Never put sensitive information in these variables.
 
