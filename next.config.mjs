@@ -2,8 +2,9 @@
 const isProd = process.env.NODE_ENV === "production";
 const nextConfig = {
   reactStrictMode: true,
-  output: "export", // Enable static export for client-side only deployment
-  ...(isProd ? { basePath: "/smartdeeds", assetPrefix: "/smartdeeds" } : {}),
+  output: 'export', // Enable static export for client-side only deployment
+  basePath: '/smartdeeds', // Base path for subdirectory deployment
+  assetPrefix: '/smartdeeds', // Asset prefix for static files
   images: {
     unoptimized: true, // Required for static export
     remotePatterns: [
@@ -38,6 +39,6 @@ const nextConfig = {
       },
     ],
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

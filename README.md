@@ -8,7 +8,8 @@ A Next.js application recreating the SmartDeeds.ai Version 1 website with SmartD
 - **Base Network**: All transactions processed on Base network
 - **Blockchain Integration**: Thirdweb SDK for wallet connections and NFT interactions
 - **Multi-Signature Wallet**: Funds secured in multi-sig wallets
-- **Legal Pages**: Terms of Service and KYC pages
+- **Legal Pages**: Terms of Service, Disclaimer, and KYC pages
+- **KYC Verification Flow**: Optional KYC verification flow with feature flag (disabled by default)
 - **SEO Optimized**: Robots.txt, sitemap.xml, and structured data (JSON-LD)
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 - **Color Palette**: Yellowish (#EEFE93), Black, and White
@@ -63,6 +64,11 @@ smartdeeds.ai-v2/
 │   ├── terms/                 # Terms of Service page
 
 │   └── kyc/                  # KYC page
+│       ├── page.tsx          # KYC page (mockup form when disabled)
+│       ├── start/            # KYC start page (when enabled)
+│       │   └── page.tsx
+│       └── return/           # KYC return/callback page (when enabled)
+│           └── page.tsx
 ├── components/
 │   ├── Header.tsx            # Navigation header with wallet connection
 │   ├── Footer.tsx            # Footer component
@@ -81,6 +87,8 @@ smartdeeds.ai-v2/
 │   ├── Providers.tsx        # App providers wrapper
 │   ├── ThemeProvider.tsx     # Theme context provider
 │   ├── ThirdwebProvider.tsx  # Thirdweb SDK provider
+│   ├── KycGate.tsx          # KYC gate component (when enabled)
+│   ├── KycRedirect.tsx      # KYC redirect component for home page (when enabled)
 │   └── ui/                   # shadcn/ui components
 │       ├── button.tsx
 │       ├── carousel.tsx
@@ -92,6 +100,7 @@ smartdeeds.ai-v2/
 │   ├── thirdweb-client.ts    # Thirdweb client configuration
 │   ├── publications.ts       # Publication data
 │   ├── companies.ts          # Company information
+│   ├── kyc.ts               # KYC API client
 │   └── utils.ts              # Utility functions
 ├── hooks/
 │   └── use-toast.ts          # Toast notification hook
@@ -175,6 +184,10 @@ NEXT_PUBLIC_COMPANY_MENTIONS=The Wall Street Journal, The Real Deal
 
 # Calendly Configuration
 NEXT_PUBLIC_CALENDLY_LINK=https://calendly.com/contact-smartdeeds/smartdeeds-ai-private-membership
+
+# KYC Configuration
+NEXT_PUBLIC_KYC_ENABLED=false
+NEXT_PUBLIC_KYC_API_BASE=http://leonard.mothsoft.com:8888
 ```
 
 ### Required Variables
@@ -195,8 +208,29 @@ NEXT_PUBLIC_CALENDLY_LINK=https://calendly.com/contact-smartdeeds/smartdeeds-ai-
 - `NEXT_PUBLIC_COMPANY_ASSETS` - Assets under management description
 - `NEXT_PUBLIC_COMPANY_MENTIONS` - Comma-separated list of media mentions
 
+### KYC Configuration
+
+- `NEXT_PUBLIC_KYC_ENABLED` - **Feature Flag**: Set to `"true"` to enable the KYC verification flow. When enabled:
+  - The home page (`/`) redirects to `/kyc/start` if user is not verified
+  - `/kyc` redirects to `/kyc/start` for the full KYC flow
+  - Users can create verification sessions and complete KYC through the hosted flow
+  - The `KycGate` component protects routes requiring KYC verification
+  - Default: `"false"` (shows mockup form at `/kyc`, home page accessible without verification)
+
+- `NEXT_PUBLIC_KYC_API_BASE` - **Optional**: Base URL for the KYC API. Defaults to `http://leonard.mothsoft.com:8888` if not set.
+
+**KYC Flow (when enabled):**
+1. User visits `/kyc/start` to initiate verification
+2. App creates a verification session via `POST /create-verification-session`
+3. User is redirected to the hosted KYC flow
+4. After completion, user is redirected to `/kyc/return`
+5. App polls `GET /check-verification-session/{session_id}` until verified
+6. On verification, `localStorage.kycVerified` is set to `"true"` and user is redirected
+
+**Note**: Make sure to whitelist your return URL (`https://your-domain.com/kyc/return`) on your KYC server.
+
 > **Note**: All `NEXT_PUBLIC_*` variables are exposed to the browser. Never put sensitive information in these variables.
 
 ## License
 
-ISC
+MIT

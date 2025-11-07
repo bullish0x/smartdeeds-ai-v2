@@ -1,352 +1,176 @@
-"use client";
+'use client'
 
-import { CONTRACT_CONFIG, NFT_TIERS } from "@/lib/constants";
-import {
-  useActiveAccount,
-  useActiveWalletChain,
-  NFTProvider,
-  NFTMedia,
-  NFTName,
+import { CONTRACT_CONFIG } from '@/lib/constants'
+import { 
+  useActiveAccount, 
+  useActiveWalletChain, 
+  NFTProvider, 
+  NFTMedia, 
+  NFTName, 
   NFTDescription,
-} from "thirdweb/react";
-import { getContract } from "thirdweb/contract";
-import { prepareContractCall, sendTransaction, readContract } from "thirdweb";
-import { useState, useMemo, useEffect, useRef } from "react";
-import { base } from "thirdweb/chains";
-import { getThirdwebClient } from "@/lib/thirdweb-client";
-import { toast } from "@/hooks/use-toast";
+  ClaimButton,
+  TransactionButton
+} from 'thirdweb/react'
+import { getContract } from 'thirdweb/contract'
+import { readContract } from 'thirdweb'
+import { useState, useMemo, useEffect, useRef } from 'react'
+import { base } from 'thirdweb/chains'
+import { getThirdwebClient } from '@/lib/thirdweb-client'
+import { toast } from '@/hooks/use-toast'
+import { claimTo, getActiveClaimCondition } from 'thirdweb/extensions/erc1155'
 
 interface NFTTierCardProps {
-  tokenId: number;
+  tokenId: number
 }
 
 interface ClaimCondition {
-  startTimestamp: bigint;
-  maxClaimableSupply: bigint;
-  supplyClaimed: bigint;
-  quantityLimitPerWallet: bigint;
-  merkleRoot: string;
-  pricePerToken: bigint;
-  currency: string;
-  metadata: string;
+  startTimestamp: bigint
+  maxClaimableSupply: bigint
+  supplyClaimed: bigint
+  quantityLimitPerWallet: bigint
+  merkleRoot: string
+  pricePerToken: bigint
+  currency: string
+  metadata: string
 }
 
-const EXCHANGE_RATE_BY_TOKEN: Record<number, string> = {
-  0: "1.33× Exchange Rate",
-  1: "1.3× Exchange Rate",
-  2: "1.25× Exchange Rate",
-  3: "1.20× Exchange Rate",
-};
-
-const TITLE_BY_TOKEN: Record<number, string> = {
-  0: "SmartDeed 1M",
-  1: "SmartDeed 100K",
-  2: "SmartDeed 10K",
-  3: "SmartDeed 1K",
-};
-
 export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
-  const account = useActiveAccount();
-  const chain = useActiveWalletChain();
-  const [isClaiming, setIsClaiming] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [txHash, setTxHash] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [claimCondition, setClaimCondition] = useState<ClaimCondition | null>(
-    null,
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const hasFetched = useRef(false);
+  const account = useActiveAccount()
+  const chain = useActiveWalletChain()
+  const [error, setError] = useState<string | null>(null)
+  const [quantity, setQuantity] = useState(1)
+  const [claimCondition, setClaimCondition] = useState<ClaimCondition | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const hasFetched = useRef(false)
 
   // Get client using useMemo
   const client = useMemo(() => {
     try {
-      return getThirdwebClient();
+      return getThirdwebClient()
     } catch (error) {
-      console.error("Failed to get thirdweb client:", error);
-      return null;
+      console.error('Failed to get thirdweb client:', error)
+      return null
     }
-  }, []);
+  }, [])
 
   const contract = client
     ? getContract({
         client,
-        address: CONTRACT_CONFIG.address,
+        address: CONTRACT_CONFIG.address as `0x${string}`,
         chain: base,
       })
-    : null;
+    : null
 
   // Fetch NFT metadata and claim conditions from contract
   useEffect(() => {
-    // Prevent multiple fetches
-    if (hasFetched.current) return;
-
+    // Prevent multiple fetches - use a stable key
+    const cacheKey = `${tokenId}-${CONTRACT_CONFIG.address}`
+    if (hasFetched.current) {
+      console.log(`Already fetched data for token ${tokenId}, skipping`)
+      return
+    }
+    
     const fetchNFTData = async () => {
-      if (
-        !contract ||
-        !client ||
-        tokenId === undefined ||
-        tokenId === null ||
-        isNaN(tokenId)
-      ) {
-        setIsLoading(false);
+      if (!contract || !client || tokenId === undefined || tokenId === null || isNaN(tokenId)) {
+        setIsLoading(false)
         if (tokenId === undefined || tokenId === null || isNaN(tokenId)) {
-          setError("Invalid token ID");
+          setError('Invalid token ID')
         }
-        return;
+        return
       }
 
       // Mark as fetching to prevent duplicate calls
-      hasFetched.current = true;
-      setIsLoading(true);
-      setError(null);
-
-      // Add a longer delay to avoid rate limiting when multiple cards load at once
-      // Stagger requests: 200ms * tokenId to spread them out
-      await new Promise((resolve) => setTimeout(resolve, 200 * tokenId));
-
+      hasFetched.current = true
+      setIsLoading(true)
+      setError(null)
+      
+      // Stagger requests to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 200 * tokenId))
+      
       try {
-        // Fetch claim condition - the return type is a struct, so we need to handle it as an array/object
-        const conditionResult = await readContract({
+        // Fetch claim condition using thirdweb's Drop 1155 extension
+        const activeCondition = await getActiveClaimCondition({
           contract,
-          method:
-            "function claimCondition(uint256 _tokenId) view returns (uint256 startTimestamp, uint256 maxClaimableSupply, uint256 supplyClaimed, uint256 quantityLimitPerWallet, bytes32 merkleRoot, uint256 pricePerToken, address currency, string metadata)",
-          params: [BigInt(tokenId)],
-        });
+          tokenId: BigInt(tokenId),
+        })
 
-        // Handle the result - it's a tuple array from the contract
-        // Type: readonly [bigint, bigint, bigint, bigint, `0x${string}`, bigint, string, string]
-        const resultArray = conditionResult as readonly [
-          bigint,
-          bigint,
-          bigint,
-          bigint,
-          `0x${string}`,
-          bigint,
-          string,
-          string,
-        ];
-
+        if (!activeCondition) {
+          // No claim condition set - this is okay, just means not ready for claiming yet
+          console.log(`No active claim condition for token ID ${tokenId}`)
+          setClaimCondition(null)
+          setIsLoading(false)
+          return
+        }
+        
         const condition: ClaimCondition = {
-          startTimestamp: resultArray[0],
-          maxClaimableSupply: resultArray[1],
-          supplyClaimed: resultArray[2],
-          quantityLimitPerWallet: resultArray[3],
-          merkleRoot: resultArray[4],
-          pricePerToken: resultArray[5],
-          currency: resultArray[6],
-          metadata: resultArray[7],
-        };
+          startTimestamp: activeCondition.startTimestamp,
+          maxClaimableSupply: activeCondition.maxClaimableSupply,
+          supplyClaimed: activeCondition.supplyClaimed,
+          quantityLimitPerWallet: activeCondition.quantityLimitPerWallet,
+          merkleRoot: activeCondition.merkleRoot as string,
+          pricePerToken: activeCondition.pricePerToken,
+          currency: activeCondition.currency,
+          metadata: activeCondition.metadata || '',
+        }
 
-        setClaimCondition(condition);
-        // NFT metadata will be fetched automatically by NFTProvider
+        setClaimCondition(condition)
       } catch (err: any) {
-        console.error("Error fetching NFT data:", err);
-
-        // Handle rate limiting
-        if (
-          err?.message?.includes("rate limit") ||
-          err?.message?.includes("429")
-        ) {
-          // Don't set error for rate limits - NFTProvider will handle metadata
-          // Just show that claim condition couldn't be loaded
-          setError(
-            "Rate limit exceeded. Please wait a moment and refresh the page.",
-          );
-        } else if (err?.message?.includes("PositionOutOfBounds")) {
-          // This might mean the token ID doesn't exist or has no claim condition
-          setError(
-            `No claim condition found for token ID ${tokenId}. This SmartDeed may not be available for minting.`,
-          );
+        console.error('Error fetching claim condition for token', tokenId, ':', err)
+        
+        // If claim condition not found, it's not an error - just means not set up yet
+        if (err?.message?.includes('Claim condition not found') || 
+            err?.message?.includes('No active claim phase') ||
+            err?.message?.includes('not found')) {
+          console.log(`Token ID ${tokenId} has no claim condition set yet`)
+          setClaimCondition(null)
+          // Don't set error for missing claim conditions - they might not be set up yet
+        } else if (err?.message?.includes('rate limit') || err?.message?.includes('429')) {
+          setError('Rate limit exceeded. Please wait a moment and refresh the page.')
         } else {
-          setError("Failed to load claim condition. Please try again.");
+          // Only show error for actual failures, not missing claim conditions
+          console.warn(`Could not load claim condition for token ${tokenId}:`, err.message)
         }
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
-
-    fetchNFTData();
-
-    // Reset hasFetched when tokenId changes
-    return () => {
-      hasFetched.current = false;
-    };
-  }, [contract, client, tokenId]);
-
-  const handleMint = async () => {
-    if (!account) {
-      setError("Please connect your wallet first");
-      return;
     }
 
-    if (!contract || !client || !claimCondition) {
-      setError(
-        "Blockchain connection not available. Please check your configuration.",
-      );
-      return;
-    }
+    fetchNFTData()
+    
+    // Don't reset hasFetched on cleanup - keep it cached to prevent re-fetching
+  }, [contract, client, tokenId])
 
-    setIsClaiming(true);
-    setError(null);
-    setSuccess(null);
-    setTxHash(null);
-
-    try {
-      // Calculate total price
-      const totalPrice = claimCondition.pricePerToken * BigInt(quantity);
-
-      // Prepare the claim transaction
-      // claim(address _receiver, uint256 _tokenId, uint256 _quantity, address _currency, uint256 _pricePerToken, AllowlistProof _allowlistProof, bytes _data)
-      const transaction = prepareContractCall({
-        contract,
-        method:
-          "function claim(address _receiver, uint256 _tokenId, uint256 _quantity, address _currency, uint256 _pricePerToken, (bytes32[] proof, uint256 quantityLimitPerWallet, uint256 pricePerToken, address currency) _allowlistProof, bytes _data)",
-        params: [
-          account.address, // _receiver: mint to the connected wallet
-          BigInt(tokenId), // _tokenId: the tier token ID
-          BigInt(quantity), // _quantity: number of NFTs to mint
-          claimCondition.currency ||
-            "0x0000000000000000000000000000000000000000", // _currency: from claim condition
-          claimCondition.pricePerToken, // _pricePerToken: from claim condition
-          {
-            proof: [], // Empty proof array (no allowlist)
-            quantityLimitPerWallet: BigInt(0), // No limit
-            pricePerToken: claimCondition.pricePerToken, // Price per token from claim condition
-            currency:
-              claimCondition.currency ||
-              "0x0000000000000000000000000000000000000000", // Currency from claim condition
-          }, // _allowlistProof: empty allowlist proof
-          "0x", // _data: empty bytes
-        ],
-        value:
-          claimCondition.currency ===
-          "0x0000000000000000000000000000000000000000"
-            ? totalPrice
-            : undefined, // Send native token if currency is native
-      });
-
-      // Send the transaction
-      const receipt = await sendTransaction({
-        transaction,
-        account,
-      });
-
-      console.log("Transaction successful:", receipt);
-      setTxHash(receipt.transactionHash);
-      const successMessage = `Successfully purchased ${quantity} SmartDeed${quantity > 1 ? "s" : ""}!`;
-      setSuccess(successMessage);
-
-      // Show success toast
-      toast({
-        title: "Purchase Successful!",
-        description: successMessage,
-        variant: "default",
-      });
-    } catch (err: any) {
-      console.error("Mint error:", err);
-
-      // Provide more helpful error messages
-      let errorMessage = "Failed to purchase. Please try again.";
-      let errorTitle = "Purchase Failed";
-
-      // Handle wallet cancellation/rejection
-      const errorString = JSON.stringify(err).toLowerCase();
-      const errorMessageLower = err?.message?.toLowerCase() || "";
-      const errorCode = err?.code || err?.error?.code;
-
-      // Check for user rejection/cancellation patterns
-      if (
-        errorCode === 4001 || // MetaMask user rejection code
-        errorMessageLower.includes("user rejected") ||
-        errorMessageLower.includes("user denied") ||
-        errorMessageLower.includes("user cancelled") ||
-        errorMessageLower.includes("rejected") ||
-        errorMessageLower.includes("cancelled") ||
-        errorString.includes("user rejected") ||
-        errorString.includes("user denied") ||
-        errorString.includes("user cancelled") ||
-        errorString.includes("rejected") ||
-        (err && Object.keys(err).length === 0) // Empty error object often means cancellation
-      ) {
-        errorTitle = "Transaction Cancelled";
-        errorMessage = "You cancelled the transaction in your wallet.";
-
-        // Show cancellation toast
-        toast({
-          title: errorTitle,
-          description: errorMessage,
-          variant: "default",
-        });
-
-        setError(null); // Don't show error in card for cancellation
-        return;
-      }
-
-      // Handle other specific error cases
-      if (err?.message) {
-        if (err.message.includes("insufficient funds")) {
-          errorTitle = "Insufficient Funds";
-          errorMessage =
-            "Please ensure you have enough tokens for payment and gas.";
-        } else if (err.message.includes("claim condition")) {
-          errorTitle = "Claim Conditions Not Met";
-          errorMessage =
-            "Please check if this SmartDeed is available for purchase.";
-        } else {
-          errorMessage = err.message;
-        }
-      } else if (err?.error?.message) {
-        errorMessage = err.error.message;
-      } else if (err?.reason) {
-        errorMessage = err.reason;
-      }
-
-      // Show error toast
-      toast({
-        title: errorTitle,
-        description: errorMessage,
-        variant: "destructive",
-      });
-
-      setError(errorMessage);
-    } finally {
-      setIsClaiming(false);
-    }
-  };
+  // Check if claim phase has started
+  const isClaimPhaseActive = useMemo(() => {
+    if (!claimCondition) return false
+    const currentTimestamp = BigInt(Math.floor(Date.now() / 1000))
+    return claimCondition.startTimestamp <= currentTimestamp
+  }, [claimCondition])
 
   // Format price for display
   const formatPrice = (price: bigint, currency: string) => {
-    if (price === BigInt(0)) return "Free";
-
-    // Check if currency is native token (ETH/BASE)
-    const isNative =
-      currency === "0x0000000000000000000000000000000000000000" ||
-      currency === "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-
-    // For native tokens, use 18 decimals; for ERC20, we'll assume 18 decimals unless we fetch it
-    // Most ERC20 tokens use 18 decimals, but some use 6 (like USDC)
-    const decimals = isNative ? 18 : 6; // Default to 6 for ERC20 like USDC
-    const priceNumber = Number(price) / Math.pow(10, decimals);
-    const currencySymbol = isNative ? "ETH" : "USDC";
-
-    // Format large numbers with commas (USDC: 0-2 decimals, no decimals for whole amounts)
+    if (price === BigInt(0)) return 'Free'
+    
+    const isNative = currency === '0x0000000000000000000000000000000000000000' || 
+                     currency === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+    
+    const decimals = 18
+    const priceNumber = Number(price) / Math.pow(10, decimals)
+    const currencySymbol = isNative ? 'ETH' : 'TOKEN'
+    
     const formatNumber = (num: number) => {
-      return num.toLocaleString("en-US", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-      });
-    };
+      if (num < 0.01) return num.toFixed(6)
+      else if (num < 1) return num.toFixed(4)
+      else if (num < 1000) return num.toFixed(4)
+      else return num.toLocaleString('en-US', { maximumFractionDigits: 4, minimumFractionDigits: 0 })
+    }
+    
+    return `${formatNumber(priceNumber)} ${currencySymbol}`
+  }
 
-    return `${formatNumber(priceNumber)} ${currencySymbol}`;
-  };
+  const totalPrice = claimCondition ? claimCondition.pricePerToken * BigInt(quantity) : BigInt(0)
 
-  const totalPrice = claimCondition
-    ? claimCondition.pricePerToken * BigInt(quantity)
-    : BigInt(0);
-
-  if (!contract) {
+  if (!contract || !client) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
         <div className="relative h-64 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
@@ -358,184 +182,222 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-4 animate-pulse"></div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <NFTProvider contract={contract} tokenId={BigInt(tokenId)}>
+    <NFTProvider 
+      contract={contract} 
+      tokenId={BigInt(tokenId)}
+    >
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 hover:border-yellowish transition-all hover:shadow-xl transform hover:-translate-y-2">
         <div className="relative h-64 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-          <NFTMedia className="object-contain w-full h-full" />
+          <NFTMedia 
+            className="object-contain w-full h-full"
+            loadingComponent={
+              <div className="text-gray-400 dark:text-gray-500">Loading image...</div>
+            }
+          />
         </div>
-        <div className="p-6">
+        <div className="p-6 overflow-visible">
           <h3 className="text-2xl font-bold text-black dark:text-white mb-2">
-            {TITLE_BY_TOKEN[tokenId]}
+            <NFTName 
+              loadingComponent={<span className="text-gray-400">Loading name...</span>}
+            />
           </h3>
-          <p className="text-sm font-medium text-yellowish">
-            {EXCHANGE_RATE_BY_TOKEN[tokenId] || "Exchange Rate"}
-          </p>
-          <div className="mt-2 mb-3">
-            <a
-              href="/membership"
-              className="text-xs text-yellowish underline hover:no-underline"
-            >
-              View tier perks and terms →
-            </a>
-          </div>
           <div className="mb-4">
             <p className="text-3xl font-bold text-black dark:text-white">
-              {(
-                NFT_TIERS.find((t) => t.tokenId === tokenId)?.price ?? 0
-              ).toLocaleString("en-US") + " USDC"}
+              {isLoading && !claimCondition
+                ? 'Loading...' 
+                : claimCondition 
+                  ? formatPrice(claimCondition.pricePerToken, claimCondition.currency)
+                  : 'Price unavailable'}
             </p>
             {claimCondition && (
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                per SmartDeed
+                per NFT
               </p>
             )}
           </div>
-
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <NFTDescription 
+              loadingComponent={<span className="text-gray-400">Loading description...</span>}
+            />
+          </p>
           {claimCondition && (
-            <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
-              {claimCondition.maxClaimableSupply > BigInt(0)
-                ? `${claimCondition.supplyClaimed.toString()} / ${claimCondition.maxClaimableSupply.toString()} claimed`
-                : "Open"}{" "}
-              ·{" "}
-              {claimCondition.quantityLimitPerWallet > BigInt(0)
-                ? `Max ${claimCondition.quantityLimitPerWallet.toString()}/wallet`
-                : "No wallet limit"}
-            </div>
-          )}
-          {!claimCondition && !isLoading && (
-            <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm">
+            <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">
-                  Status:
-                </span>
-                <span className="text-gray-500 dark:text-gray-500 font-semibold">
-                  Claim condition unavailable
+                <span className="text-gray-600 dark:text-gray-400">Available:</span>
+                <span className="text-black dark:text-white font-semibold">
+                  {claimCondition.maxClaimableSupply > BigInt(0)
+                    ? `${claimCondition.supplyClaimed.toString()} / ${claimCondition.maxClaimableSupply.toString()} claimed`
+                    : 'Unlimited'}
                 </span>
               </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 dark:text-gray-400">Max per wallet:</span>
+                <span className="text-black dark:text-white font-semibold">
+                  {claimCondition.quantityLimitPerWallet > BigInt(0)
+                    ? claimCondition.quantityLimitPerWallet.toString()
+                    : 'Unlimited'}
+                </span>
+              </div>
+              {(() => {
+                const currentTimestamp = BigInt(Math.floor(Date.now() / 1000))
+                const hasStarted = claimCondition.startTimestamp <= currentTimestamp
+                const startDate = new Date(Number(claimCondition.startTimestamp) * 1000)
+                const hasAllowlist = claimCondition.merkleRoot && 
+                                     claimCondition.merkleRoot !== '0x0000000000000000000000000000000000000000000000000000000000000000'
+                
+                return (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 dark:text-gray-400">Claim phase:</span>
+                      <span className={`font-semibold ${hasStarted ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'}`}>
+                        {hasStarted ? 'Active' : `Starts ${startDate.toLocaleString()}`}
+                      </span>
+                    </div>
+                    {hasAllowlist && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 dark:text-gray-400">Allowlist:</span>
+                        <span className="text-blue-600 dark:text-blue-400 font-semibold">
+                          Required
+                        </span>
+                      </div>
+                    )}
+                  </>
+                )
+              })()}
             </div>
           )}
+        {!claimCondition && !isLoading && !error && (
+          <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-sm">
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 dark:text-gray-400">Status:</span>
+                <span className="text-yellow-600 dark:text-yellow-400 font-semibold">
+                  Not Available Yet
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Claim conditions need to be set up for this NFT. Visit the{' '}
+                <a 
+                  href={`https://thirdweb.com/${base.id}/${CONTRACT_CONFIG.address}/claim-conditions`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  thirdweb dashboard
+                </a>
+                {' '}to configure.
+              </p>
+            </div>
+          </div>
+        )}
           {error && (
             <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg text-sm">
               {error}
             </div>
           )}
-          {success && (
-            <div className="mb-4 p-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg text-sm">
-              <div className="font-semibold mb-1">{success}</div>
-              {txHash && (
-                <a
-                  href={`https://basescan.org/tx/${txHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:no-underline"
-                >
-                  View on BaseScan →
-                </a>
-              )}
-            </div>
-          )}
+          
           {/* Quantity Selector */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-black dark:text-white mb-2">
+          <div className="mb-4 w-full">
+            <label className="block text-sm font-medium text-black dark:text-white mb-2 w-full">
               Quantity
             </label>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2 w-full">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
-                className="px-2 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
+                className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
               >
                 -
               </button>
               <input
                 type="number"
                 min="1"
-                max={
-                  claimCondition?.quantityLimitPerWallet &&
-                  claimCondition.quantityLimitPerWallet > BigInt(0)
-                    ? Number(claimCondition.quantityLimitPerWallet)
-                    : undefined
-                }
+                max={claimCondition?.quantityLimitPerWallet && claimCondition.quantityLimitPerWallet > BigInt(0) 
+                  ? Number(claimCondition.quantityLimitPerWallet) 
+                  : undefined}
                 value={quantity}
                 onChange={(e) => {
-                  const val = parseInt(e.target.value) || 1;
-                  const max =
-                    claimCondition?.quantityLimitPerWallet &&
-                    claimCondition.quantityLimitPerWallet > BigInt(0)
-                      ? Number(claimCondition.quantityLimitPerWallet)
-                      : undefined;
-                  setQuantity(max ? Math.min(val, max) : Math.max(1, val));
+                  const val = parseInt(e.target.value) || 1
+                  const max = claimCondition?.quantityLimitPerWallet && claimCondition.quantityLimitPerWallet > BigInt(0)
+                    ? Number(claimCondition.quantityLimitPerWallet)
+                    : undefined
+                  setQuantity(max ? Math.min(val, max) : Math.max(1, val))
                 }}
-                className="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded text-center text-black dark:text-white bg-white dark:bg-gray-800"
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded text-center text-black dark:text-white bg-white dark:bg-gray-800"
               />
               <button
                 onClick={() => {
-                  const max =
-                    claimCondition?.quantityLimitPerWallet &&
-                    claimCondition.quantityLimitPerWallet > BigInt(0)
-                      ? Number(claimCondition.quantityLimitPerWallet)
-                      : undefined;
-                  setQuantity(max ? Math.min(quantity + 1, max) : quantity + 1);
+                  const max = claimCondition?.quantityLimitPerWallet && claimCondition.quantityLimitPerWallet > BigInt(0)
+                    ? Number(claimCondition.quantityLimitPerWallet)
+                    : undefined
+                  setQuantity(max ? Math.min(quantity + 1, max) : quantity + 1)
                 }}
-                disabled={
-                  claimCondition?.quantityLimitPerWallet &&
-                  claimCondition.quantityLimitPerWallet > BigInt(0)
-                    ? quantity >= Number(claimCondition.quantityLimitPerWallet)
-                    : false
-                }
-                className="px-2 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
+                disabled={claimCondition?.quantityLimitPerWallet && claimCondition.quantityLimitPerWallet > BigInt(0)
+                  ? quantity >= Number(claimCondition.quantityLimitPerWallet)
+                  : false}
+                className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
               >
                 +
               </button>
             </div>
             {claimCondition && (
-              <>
-                <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center">
-                  Total:{" "}
-                  {NFT_TIERS.find((t) => t.tokenId === tokenId)?.price
-                    ? (
-                        NFT_TIERS.find((t) => t.tokenId === tokenId)!.price *
-                        quantity
-                      ).toLocaleString("en-US") + " USDC"
-                    : "—"}
-                </div>
-                <div className="mt-3 text-xs text-gray-500 dark:text-gray-400 text-center">
-                  <a href="/terms" className="underline hover:no-underline">
-                    Presale terms apply →
-                  </a>
-                </div>
-              </>
+              <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center">
+                Total: {totalPrice > BigInt(0) 
+                  ? formatPrice(totalPrice, claimCondition.currency)
+                  : 'Free'}
+              </div>
             )}
           </div>
 
-          {/* Mint Button */}
-          <button
-            onClick={handleMint}
-            disabled={
-              !account ||
-              isClaiming ||
-              chain?.id !== base.id ||
-              !contract ||
-              !claimCondition
-            }
-            className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {!contract
-              ? "Initializing..."
-              : !account
-                ? "Connect Wallet to Purchase"
+          {/* ClaimButton - auto-handles allowlist proofs for Drop 1155 contracts */}
+          {client && contract && account && isClaimPhaseActive && chain?.id === base.id ? (
+            <ClaimButton
+              contractAddress={CONTRACT_CONFIG.address}
+              chain={base}
+              client={client}
+              claimParams={{
+                type: "ERC1155",
+                quantity: BigInt(quantity),
+                tokenId: BigInt(tokenId),
+              }}
+              onTransactionConfirmed={(receipt) => {
+                toast({
+                  title: 'Mint Successful!',
+                  description: `Successfully minted ${quantity} NFT${quantity > 1 ? 's' : ''}!`,
+                })
+                setQuantity(1)
+              }}
+              onError={(error) => {
+                toast({
+                  title: 'Mint Failed',
+                  description: error.message || 'Failed to mint NFT. Please try again.',
+                  variant: 'destructive',
+                })
+              }}
+              className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
+              Mint {quantity} NFT{quantity > 1 ? 's' : ''}
+            </ClaimButton>
+          ) : (
+            <button
+              disabled
+              className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold opacity-50 cursor-not-allowed"
+            >
+              {!account
+                ? 'Connect Wallet to Mint'
                 : chain?.id !== base.id
-                  ? "Switch to Base Network"
-                  : isClaiming
-                    ? "Processing Transaction..."
-                    : `Purchase ${quantity} SmartDeed${quantity > 1 ? "s" : ""}`}
-          </button>
+                  ? 'Switch to Base Network'
+                  : !isClaimPhaseActive
+                    ? 'Claim Phase Not Started'
+                    : 'Loading...'}
+            </button>
+          )}
         </div>
       </div>
     </NFTProvider>
-  );
+  )
 }

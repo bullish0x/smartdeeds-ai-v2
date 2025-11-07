@@ -8,11 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 // Utility to prefix paths with basePath for static export
 // This ensures images work correctly when deployed to a subdirectory
 export function getImagePath(path: string): string {
-  const basePath = '/smartdeeds'
-  // Only prefix if path starts with / and basePath is set
-  if (path.startsWith('/') && basePath) {
-    return `${basePath}${path}`
-  }
+  // Just return the path as-is for now
+  // The basePath will be handled by Next.js configuration when needed
   return path
 }
 
