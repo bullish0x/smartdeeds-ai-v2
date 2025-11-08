@@ -58,13 +58,28 @@ export default function TrustSection() {
             Project Malibu plus membership access.
           </p>
 
+          {/* Powered By Section */}
+          <motion.div
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="mt-12 text-center space-y-4"
+          >
+            <div className="inline-block px-6 py-3 bg-white/5 backdrop-blur-sm rounded-xl border border-yellowish/20">
+              <p className="text-lg text-gray-200 font-medium">
+                SmartDeeds powered by <span className="text-yellowish font-semibold">Sols Lot</span> and <span className="text-yellowish font-semibold">Belwood</span>
+              </p>
+            </div>
+          </motion.div>
+
           {/* Company Logos */}
           <motion.div
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="flex flex-wrap justify-center gap-4 mt-12"
+            className="flex flex-wrap justify-center gap-4"
           >
             {COMPANIES.map((company, index) => (
               <motion.div

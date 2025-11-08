@@ -181,19 +181,25 @@ export default function Footer() {
           </motion.div>
         </motion.div>
 
-        {/* Copyright */}
+        {/* Copyright & Powered By */}
         <motion.div
           initial="initial"
           whileInView="animate"
           viewport={{ once: true, margin: "-100px" }}
           variants={fadeInUp}
-          className="mt-12 pt-8 border-t border-white/10 text-center text-sm text-gray-400"
+          className="mt-12 pt-8 border-t border-white/10 text-center space-y-4"
         >
-          <p>
+          <p className="text-sm text-gray-400">
             &copy; {new Date().getFullYear()} SmartDeeds. All rights reserved.
           </p>
+          <div className="flex flex-col items-center pt-2">
+            <p className="text-base text-gray-300 font-medium">
+              SmartDeeds powered by <span className="text-yellowish font-semibold">Sols Lot</span> and <span className="text-yellowish font-semibold">Belwood</span>
+            </p>
+          </div>
         </motion.div>
       </div>
     </footer>
   );
 }
+

@@ -110,15 +110,20 @@ export default function Header() {
         <div className="flex justify-between items-center h-16 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center group flex-shrink-0">
-            <Image
-              src={getImagePath("/images/smartdeeds.png")}
-              alt="SmartDeeds"
-              width={200}
-              height={60}
-              className="h-7 sm:h-8 md:h-10 lg:h-12 w-auto max-w-[120px] sm:max-w-[140px] md:max-w-[180px] lg:max-w-[200px] object-contain transition-transform group-hover:scale-105"
-              priority
-              unoptimized
-            />
+            <div className="flex flex-col">
+              <Image
+                src={getImagePath("/images/smartdeeds.png")}
+                alt="SmartDeeds"
+                width={200}
+                height={60}
+                className="h-7 sm:h-8 md:h-10 lg:h-12 w-auto max-w-[120px] sm:max-w-[140px] md:max-w-[180px] lg:max-w-[200px] object-contain transition-transform group-hover:scale-105"
+                priority
+                unoptimized
+              />
+              <span className="text-[10px] sm:text-xs text-gray-500 mt-0.5 hidden sm:block">
+                powered by <span className="text-gray-400 font-medium">Sols Lot</span> and <span className="text-gray-400 font-medium">Belwood</span>
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

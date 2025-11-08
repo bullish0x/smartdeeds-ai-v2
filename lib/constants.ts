@@ -85,7 +85,7 @@ export const MULTISIG_INFO = {
 
 export const COMPANY_INFO = {
   name: 'SmartDeeds',
-  founded: 'Solslot.com, Bestia AI, Belwood Investments',
+  founded: 'Sols Lot, Bestia AI, Belwood Investments',
   assets: '$150M+ in assets under management',
   mentions: ['The Wall Street Journal', 'The Real Deal'],
 };

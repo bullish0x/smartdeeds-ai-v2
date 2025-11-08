@@ -7,9 +7,10 @@ export interface Company {
 
 export const COMPANIES: Company[] = [
   {
-    id: 'solslot',
-    name: 'Solslot.com',
+    id: 'sols-lot',
+    name: 'Sols Lot',
     // Add logo path when available
+    // Add URL when available
   },
   {
     id: 'bestia-ai',
