@@ -58,16 +58,22 @@ export default function Home() {
 
       <main className="min-h-screen bg-black">
         <Header />
+        
+        {/* 1. Hero - Immediate visual impact with property images */}
         <Hero />
-        <HowItWorks />
-
-        {/* Use your chosen tiers component */}
-        <SmartDeedsTiers />
-
+        
+        {/* 2. Project Malibu - Lead with cultural cachet (Tadao Ando + Kanye West) */}
         <ProjectMalibu />
 
+        {/* 3. Trust/About Section - Consolidated credibility (Bo Belmont + Company logos) */}
+        <TrustSection />
+        <BoBelmont />
+        
+        {/* 4. Tiers - Now they're interested, show the membership options */}
+        <SmartDeedsTiers />
+
         {/* --- BEGIN: Your full custom Malibu Program section (unchanged) --- */}
-        <section id="malibu-program" className="py-20 bg-black">
+        <section id="malibu-program" className="py-20 bg-zinc-950">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -257,11 +263,18 @@ export default function Home() {
         </section>
         {/* --- END: Custom Malibu Program section --- */}
 
-        <BoBelmont />
-        <VideoSection />
-        <TrustSection />
+        {/* 5. How It Works - Explain the process after they're interested */}
+        <HowItWorks />
+        
+        {/* 6. Publications - Reinforce credibility mid-funnel */}
         <PublicationsCarousel />
+        
+        {/* 7. Video Section - Deeper dive for engaged visitors */}
+        <VideoSection />
+        
+        {/* 8. Connection Section - Final CTA */}
         <ConnectionSection />
+        
         <Footer />
         <FloatingCTA />
       </main>

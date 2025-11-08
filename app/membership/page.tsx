@@ -1,136 +1,250 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { Crown, Gem, Award, Medal, ArrowRight, Check } from "lucide-react";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { generateMetadata as generatePageMetadata } from "@/lib/metadata";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { fadeInUp, staggerContainer, staggerItem } from "@/lib/motion";
 
-export const metadata: Metadata = generatePageMetadata({
-  title: "Membership & Pre‑Sale Commitment Agreement (U.S.) - SmartDeeds",
-  description:
-    "SMARTDEED Membership & Pre‑Sale Commitment Agreement (U.S.) for invited applicants. Private membership terms, pre‑sale commitment and escrow, confidentiality, SmartDeed digital primacy, governing law, dispute resolution, and schedules.",
-  path: "/membership",
-});
+const tiers = [
+  {
+    id: "founders",
+    icon: Crown,
+    name: "Founders Circle — Legacy",
+    subtitle: "Invitation Only",
+    price: "$300,000",
+    exchange: "1.33×",
+    color: "from-purple-500 to-pink-500",
+    features: [
+      "💎 Includes all Diamond perks",
+      "👥 Exclusive Founders Summit",
+      "🔖 Name recognition at property",
+      "🤝 Special co-branding privileges"
+    ]
+  },
+  {
+    id: "diamond",
+    icon: Gem,
+    name: "Diamond — Estate Tier",
+    subtitle: "Premium Access",
+    price: "$100,000",
+    exchange: "1.30×",
+    color: "from-cyan-500 to-blue-500",
+    features: [
+      "🥈 Includes all Platinum perks",
+      "🏡 4 Private Estate Sessions/year",
+      "🍽️ Half-day hosted experiences (up to 12 guests)",
+      "👨‍🍳 1 chef dinner annually",
+      "🗓️ Concierge scheduling included"
+    ]
+  },
+  {
+    id: "platinum",
+    icon: Award,
+    name: "Platinum — Social Tier",
+    subtitle: "Enhanced Experience",
+    price: "$10,000",
+    exchange: "1.25×",
+    color: "from-gray-400 to-gray-600",
+    features: [
+      "🥇 Includes all Gold perks",
+      "🌅 2 Malibu Member Days/year",
+      "🎤 Sunset receptions & curated talks",
+      "🤝 Private guest access privileges"
+    ]
+  },
+  {
+    id: "gold",
+    icon: Medal,
+    name: "Gold — Insider Tier",
+    subtitle: "Foundation Access",
+    price: "$1,000",
+    exchange: "1.20×",
+    color: "from-yellow-500 to-orange-500",
+    features: [
+      "🏛️ One guided day at Malibu Estate",
+      "📐 Property tour & architecture briefing",
+      "🤝 Private networking mixer"
+    ]
+  }
+];
 
 export default function MembershipPage() {
   return (
-    <main className="min-h-screen bg-white dark:bg-black">
+    <main className="min-h-screen bg-black">
       <Header />
-      <div className="pt-16 pb-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl md:text-5xl font-bold text-black dark:text-white mb-3">
-            Membership — Overview
-          </h1>
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-            Invite‑only access to Project Malibu — on a public blockchain. Bring
-            your own wallet. At go‑live, presale Vouchers are redeemed for a
-            SmartDeed Digital Assignment Contract (DAC) issued at the tier's
-            Exchange Rate. The DAC combines a contractual minority economic
-            assignment (not title/governance) and a Global Digital Membership
-            (consumptive, non‑financial).
-          </p>
-
-          <div className="mb-6 flex flex-wrap gap-3">
-            <a
-              href="/terms"
-              className="text-yellowish underline hover:no-underline"
+      
+      <div className="pt-24 pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.div variants={fadeInUp} className="inline-block mb-4">
+              <Badge variant="outline" className="border-yellowish/50 text-yellowish bg-yellowish/10 px-4 py-2 text-base">
+                Invite-Only Program
+              </Badge>
+            </motion.div>
+            
+            <motion.h1 
+              variants={fadeInUp}
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6"
             >
-              Read Presale Terms →
-            </a>
-          </div>
+              Membership <span className="text-yellowish">Overview</span>
+            </motion.h1>
+            
+            <motion.p 
+              variants={fadeInUp}
+              className="text-lg sm:text-xl text-gray-300 max-w-4xl mx-auto mb-8"
+            >
+              Invite‑only access to Project Malibu — on a public blockchain. Bring
+              your own wallet. At go‑live, presale Vouchers are redeemed for a
+              SmartDeed Digital Assignment Contract (DAC) issued at the tier's
+              Exchange Rate.
+            </motion.p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-5 bg-white dark:bg-gray-900">
-              <h3 className="text-xl font-bold text-black dark:text-white mb-1">
-                👑 Founders Circle — Legacy
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                $300,000 • 1.33× Exchange Rate
-              </p>
-              <ul className="text-sm text-gray-600 dark:text-gray-400 list-none pl-0 space-y-1">
-                <li>💎 Includes all Diamond perks</li>
-                <li>👥 Exclusive Founders Summit</li>
-                <li>🔖 Name recognition • 🤝 co‑branding</li>
-              </ul>
-              <div className="mt-3">
-                <a
-                  href="/#tiers"
-                  className="text-yellowish text-sm underline hover:no-underline"
-                >
-                  Request Invite →
+            <motion.div variants={fadeInUp}>
+              <Button 
+                asChild 
+                variant="outline" 
+                size="lg"
+                className="border-yellowish text-yellowish hover:bg-yellowish hover:text-black"
+              >
+                <a href="/terms">
+                  Read Presale Terms <ArrowRight className="ml-2 w-4 h-4" />
                 </a>
-              </div>
-            </div>
+              </Button>
+            </motion.div>
+          </motion.div>
 
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-5 bg-white dark:bg-gray-900">
-              <h3 className="text-xl font-bold text-black dark:text-white mb-1">
-                💎 Diamond — Estate
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                $100,000 • 1.30× Exchange Rate
-              </p>
-              <ul className="text-sm text-gray-600 dark:text-gray-400 list-none pl-0 space-y-1">
-                <li>🥈 Includes all Platinum perks</li>
-                <li>
-                  🏡 4 Private Estate Sessions/year (half‑day, up to 12 guests)
-                </li>
-                <li>👨‍🍳 1 chef dinner • 🗓️ concierge scheduling</li>
-              </ul>
-              <div className="mt-3">
-                <a
-                  href="/#tiers"
-                  className="text-yellowish text-sm underline hover:no-underline"
-                >
-                  Select Diamond →
-                </a>
-              </div>
-            </div>
+          {/* Tiers Grid */}
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16"
+          >
+            {tiers.map((tier, index) => {
+              const Icon = tier.icon;
+              return (
+                <motion.div key={tier.id} variants={staggerItem}>
+                  <Card className="bg-zinc-950 border-white/10 hover:border-yellowish/50 transition-all duration-300 hover:shadow-glow group h-full">
+                    <CardHeader className="space-y-4">
+                      <div className="flex items-start justify-between">
+                        <div 
+                          className={`p-3 rounded-xl bg-gradient-to-br ${tier.color} shadow-lg group-hover:scale-110 transition-transform`}
+                        >
+                          <Icon className="w-6 h-6 text-white" />
+                        </div>
+                        <Badge variant="outline" className="border-yellowish/50 text-yellowish bg-yellowish/10">
+                          {tier.exchange} Exchange Rate
+                        </Badge>
+                      </div>
+                      
+                      <div>
+                        <CardTitle className="text-2xl text-white mb-1">
+                          {tier.name}
+                        </CardTitle>
+                        <CardDescription className="text-gray-400">
+                          {tier.subtitle}
+                        </CardDescription>
+                      </div>
+                      
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-bold text-yellowish">
+                          {tier.price}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          Pre-Launch Voucher
+                        </span>
+                      </div>
+                    </CardHeader>
+                    
+                    <CardContent className="space-y-4">
+                      <ul className="space-y-3">
+                        {tier.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-gray-300">
+                            <Check className="w-5 h-5 text-yellowish mt-0.5 flex-shrink-0" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      
+                      <Button 
+                        asChild 
+                        variant={tier.id === "founders" ? "yellowish" : "outline"}
+                        className={`w-full ${tier.id !== "founders" ? "border-white/20 text-white hover:bg-white/10" : ""}`}
+                      >
+                        <a href="/#tiers">
+                          {tier.id === "founders" ? "Request Invite" : `Select ${tier.name.split(' — ')[0]}`}
+                          <ArrowRight className="ml-2 w-4 h-4" />
+                        </a>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </motion.div>
 
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-5 bg-white dark:bg-gray-900">
-              <h3 className="text-xl font-bold text-black dark:text-white mb-1">
-                🥈 Platinum — Social
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                $10,000 • 1.25× Exchange Rate
-              </p>
-              <ul className="text-sm text-gray-600 dark:text-gray-400 list-none pl-0 space-y-1">
-                <li>🥇 Includes all Gold perks</li>
-                <li>
-                  🌅 2 Malibu Member Days/year (receptions, talks, guest access)
-                </li>
-              </ul>
-              <div className="mt-3">
-                <a
-                  href="/#tiers"
-                  className="text-yellowish text-sm underline hover:no-underline"
-                >
-                  Select Platinum →
-                </a>
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-5 bg-white dark:bg-gray-900">
-              <h3 className="text-xl font-bold text-black dark:text-white mb-1">
-                🥇 Gold — Insider
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                $1,000 • 1.20× Exchange Rate
-              </p>
-              <ul className="text-sm text-gray-600 dark:text-gray-400 list-none pl-0 space-y-1">
-                <li>🏛️ Guided day at the Malibu Estate</li>
-                <li>📐 Architecture briefing + tour</li>
-                <li>🤝 Private networking mixer</li>
-              </ul>
-              <div className="mt-3">
-                <a
-                  href="/#tiers"
-                  className="text-yellowish text-sm underline hover:no-underline"
-                >
-                  Select Gold →
-                </a>
-              </div>
-            </div>
-          </div>
+          {/* Additional Info */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <Card className="bg-zinc-950 border-yellowish/30">
+              <CardHeader>
+                <CardTitle className="text-white">Important Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-gray-300">
+                <div className="flex gap-3">
+                  <div className="w-1.5 bg-yellowish rounded-full flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-white mb-1">Voucher & Launch</p>
+                    <p>
+                      SmartDeed NFT (on-chain digital assignment granting a minority economic
+                      assignment—no title/governance—plus non-financial membership access) is issued at
+                      the applicable Exchange Rate.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-3">
+                  <div className="w-1.5 bg-yellowish rounded-full flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-white mb-1">Membership Benefits</p>
+                    <p>
+                      Lifetime privileges for the active life of the property under SmartDeeds' management.
+                      Membership is consumptive and non-financial—no dividends, profit-sharing, voting, or
+                      control rights.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-3">
+                  <div className="w-1.5 bg-yellowish rounded-full flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-white mb-1">Eligibility</p>
+                    <p>
+                      Participation is subject to eligibility, KYC/AML, and sanctions screening. Funding
+                      is held in escrow and released at Launch per the Agreement.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </div>
+      
       <Footer />
     </main>
   );

@@ -2,9 +2,15 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { CheckCircle2, Loader2, AlertCircle, RefreshCcw } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { checkVerificationStatus, type KycStatus } from '@/lib/kyc'
+import { fadeInUp } from '@/lib/motion'
 
 const POLL_MS = 2500
 const POLL_TIMEOUT_MS = 2 * 60 * 1000 // 2 minutes
@@ -86,59 +92,129 @@ function KycReturnContent() {
   }, [searchParams, router])
 
   return (
-    <div className="pt-16 pb-20">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white mb-6">
-          Completing Verification…
-        </h1>
+    <div className="pt-24 pb-20">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="bg-zinc-950 border-white/10">
+            <CardHeader className="text-center">
+              <CardTitle className="text-3xl text-white mb-2">
+                {status === 'verified' && 'Verification Complete!'}
+                {status === 'processing' && 'Processing Verification...'}
+                {status === 'requires_input' && 'Additional Information Needed'}
+                {status === 'error' && 'Verification Issue'}
+                {status === 'none' && 'Checking Status...'}
+              </CardTitle>
+              <CardDescription className="text-gray-400 text-base">
+                {status === 'verified' && 'Your identity has been successfully verified'}
+                {status === 'processing' && 'Please wait while we verify your information'}
+                {status === 'requires_input' && 'We need more information to complete your verification'}
+                {status === 'error' && 'There was a problem with the verification process'}
+                {status === 'none' && 'Please wait a moment...'}
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-6">
+              {/* Processing State */}
+              {status === 'processing' && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex flex-col items-center gap-4 py-8"
+                >
+                  <Loader2 className="w-16 h-16 text-yellowish animate-spin" />
+                  <p className="text-gray-300 text-center max-w-md">
+                    Your verification is being processed. This usually takes a moment. Please don't close this window.
+                  </p>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="w-2 h-2 rounded-full bg-yellowish animate-pulse" />
+                    <span>Checking status every few seconds...</span>
+                  </div>
+                </motion.div>
+              )}
 
-        {status === 'processing' && (
-          <div className="space-y-4">
-            <div className="inline-block w-16 h-16 border-4 border-yellowish border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-lg text-gray-700 dark:text-gray-300">
-              Your verification is being processed. This usually takes a moment.
-            </p>
-          </div>
-        )}
+              {/* Verified State */}
+              {status === 'verified' && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-col items-center gap-4 py-8"
+                >
+                  <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <CheckCircle2 className="w-12 h-12 text-green-500" />
+                  </div>
+                  <p className="text-gray-300 text-center max-w-md">
+                    Great! You're all set. Redirecting you back to the app...
+                  </p>
+                </motion.div>
+              )}
 
-        {status === 'requires_input' && (
-          <div className="space-y-4">
-            <p className="text-lg text-gray-700 dark:text-gray-300">
-              {msg || 'Verification requires additional information.'}
-            </p>
-            <a
-              href="/kyc/start"
-              className="inline-block bg-black dark:bg-white text-white dark:text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-            >
-              Continue verification
-            </a>
-          </div>
-        )}
+              {/* Requires Input State */}
+              {status === 'requires_input' && (
+                <div className="space-y-4">
+                  <Alert className="bg-yellow-900/20 border-yellow-500/50">
+                    <AlertCircle className="w-4 h-4 text-yellow-400" />
+                    <AlertDescription className="text-yellow-200">
+                      {msg || 'Verification requires additional information.'}
+                    </AlertDescription>
+                  </Alert>
+                  <Button 
+                    asChild 
+                    variant="yellowish" 
+                    size="lg" 
+                    className="w-full"
+                  >
+                    <a href="/kyc/start">
+                      <RefreshCcw className="w-4 h-4 mr-2" />
+                      Continue Verification
+                    </a>
+                  </Button>
+                </div>
+              )}
 
-        {status === 'error' && (
-          <div className="space-y-4">
-            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-red-600 dark:text-red-400">
-                {msg || 'Something went wrong.'}
-              </p>
-            </div>
-            <a
-              href="/kyc/start"
-              className="inline-block bg-black dark:bg-white text-white dark:text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-            >
-              Try again
-            </a>
-          </div>
-        )}
+              {/* Error State */}
+              {status === 'error' && (
+                <div className="space-y-4">
+                  <Alert className="bg-red-900/20 border-red-500/50">
+                    <AlertCircle className="w-4 h-4 text-red-400" />
+                    <AlertDescription className="text-red-400">
+                      {msg || 'Something went wrong during verification.'}
+                    </AlertDescription>
+                  </Alert>
+                  <Button 
+                    asChild 
+                    variant="yellowish" 
+                    size="lg" 
+                    className="w-full"
+                  >
+                    <a href="/kyc/start">
+                      <RefreshCcw className="w-4 h-4 mr-2" />
+                      Try Again
+                    </a>
+                  </Button>
+                </div>
+              )}
 
-        {status === 'none' && (
-          <div className="space-y-4">
-            <div className="inline-block w-16 h-16 border-4 border-yellowish border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-lg text-gray-700 dark:text-gray-300">
-              Checking your status…
-            </p>
-          </div>
-        )}
+              {/* Initial Loading State */}
+              {status === 'none' && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex flex-col items-center gap-4 py-8"
+                >
+                  <Loader2 className="w-16 h-16 text-yellowish animate-spin" />
+                  <p className="text-gray-300 text-center">
+                    Checking your verification status...
+                  </p>
+                </motion.div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </div>
   )
@@ -146,17 +222,24 @@ function KycReturnContent() {
 
 function LoadingFallback() {
   return (
-    <div className="pt-16 pb-20">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white mb-6">
-          Completing Verification…
-        </h1>
-        <div className="space-y-4">
-          <div className="inline-block w-16 h-16 border-4 border-yellowish border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-lg text-gray-700 dark:text-gray-300">
-            Loading…
-          </p>
-        </div>
+    <div className="pt-24 pb-20">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Card className="bg-zinc-950 border-white/10">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl text-white mb-2">
+              Checking Status...
+            </CardTitle>
+            <CardDescription className="text-gray-400 text-base">
+              Please wait a moment...
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="py-12">
+            <div className="flex flex-col items-center gap-4">
+              <Loader2 className="w-16 h-16 text-yellowish animate-spin" />
+              <p className="text-gray-300">Loading...</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
@@ -164,7 +247,7 @@ function LoadingFallback() {
 
 export default function KycReturn() {
   return (
-    <main className="min-h-screen bg-white dark:bg-black">
+    <main className="min-h-screen bg-black">
       <Header />
       <Suspense fallback={<LoadingFallback />}>
         <KycReturnContent />
@@ -173,4 +256,3 @@ export default function KycReturn() {
     </main>
   )
 }
-

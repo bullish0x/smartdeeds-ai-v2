@@ -1,9 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { NFT_TIERS } from "@/lib/constants";
 import NFTTierCard from "./NFTTierCard";
-import SwapWidgetSection from "./SwapWidget";
+
+// Dynamic import for SwapWidget to improve initial page load
+const SwapWidgetSection = dynamic(() => import("./SwapWidget"), {
+  loading: () => (
+    <div className="flex items-center justify-center p-12">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellowish"></div>
+    </div>
+  ),
+  ssr: false, // Disable SSR for this component
+});
 
 export default function SmartDeedsTiers() {
   const [showSwapWidget, setShowSwapWidget] = useState(false);
