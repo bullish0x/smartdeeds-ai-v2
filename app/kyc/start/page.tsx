@@ -1,9 +1,16 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { ShieldCheck, Loader2, AlertCircle } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { createVerificationSession } from '@/lib/kyc'
+import { fadeInUp, staggerContainer } from '@/lib/motion'
 
 export default function KycStart() {
   const [loading, setLoading] = useState(false)
@@ -45,34 +52,132 @@ export default function KycStart() {
   }
 
   return (
-    <main className="min-h-screen bg-white dark:bg-black">
+    <main className="min-h-screen bg-black">
       <Header />
-      <div className="pt-16 pb-20">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white mb-6">
-            Identity Verification Required
-          </h1>
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">
-            You must complete KYC before accessing the app.
-          </p>
-
-          <button
-            onClick={start}
-            disabled={loading}
-            className="bg-black dark:bg-white text-white dark:text-black py-4 px-8 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      
+      <div className="pt-24 pb-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header Section */}
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={staggerContainer}
+            className="text-center mb-12"
           >
-            {loading ? 'Starting…' : 'Start verification'}
-          </button>
+            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-2 mb-4">
+              <ShieldCheck className="w-10 h-10 text-yellowish" />
+              <Badge variant="outline" className="border-yellowish/50 text-yellowish bg-yellowish/10 px-4 py-2 text-base">
+                Secure Verification
+              </Badge>
+            </motion.div>
+            
+            <motion.h1 
+              variants={fadeInUp}
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6"
+            >
+              Identity Verification <span className="text-yellowish">Required</span>
+            </motion.h1>
+            
+            <motion.p 
+              variants={fadeInUp}
+              className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto"
+            >
+              You must complete KYC before accessing the app. This is a quick and secure process to verify your identity.
+            </motion.p>
+          </motion.div>
 
-          {error && (
-            <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-red-600 dark:text-red-400">{error}</p>
-            </div>
-          )}
+          {/* Main Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Card className="bg-zinc-950 border-white/10">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl text-white">Begin Verification Process</CardTitle>
+                <CardDescription className="text-gray-400 text-base">
+                  You'll be redirected to our secure verification partner. The process typically takes 2-3 minutes.
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent className="space-y-6">
+                {/* Info List */}
+                <div className="space-y-3 text-gray-300">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-yellowish/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-yellowish text-sm font-bold">1</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white">Prepare Your Documents</p>
+                      <p className="text-sm">Have your government-issued ID ready (passport, driver's license, or national ID)</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-yellowish/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-yellowish text-sm font-bold">2</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white">Complete Verification</p>
+                      <p className="text-sm">Follow the secure verification flow to submit your information</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-yellowish/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-yellowish text-sm font-bold">3</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white">Get Approved</p>
+                      <p className="text-sm">You'll be automatically redirected back once verification is complete</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Error Alert */}
+                {error && (
+                  <Alert className="bg-red-900/20 border-red-500/50">
+                    <AlertCircle className="w-4 h-4 text-red-400" />
+                    <AlertDescription className="text-red-400">
+                      {error}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {/* CTA Button */}
+                <Button
+                  onClick={start}
+                  disabled={loading}
+                  variant="yellowish"
+                  size="lg"
+                  className="w-full text-lg"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                      Starting Verification...
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-5 h-5 mr-2" />
+                      Start Verification
+                    </>
+                  )}
+                </Button>
+
+                {/* Privacy Notice */}
+                <div className="pt-4 border-t border-white/10">
+                  <p className="text-xs text-gray-400 text-center">
+                    Your information is encrypted and secure. We use industry-standard verification to ensure the safety of all members.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </div>
+      
       <Footer />
     </main>
   )
 }
-
