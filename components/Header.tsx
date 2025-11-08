@@ -4,8 +4,14 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
-import { ConnectButton } from "thirdweb/react";
+import { Menu, X, Wallet } from "lucide-react";
+import { ConnectButton, useActiveAccount } from "thirdweb/react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import KycPrompt, { useKycStatus } from "@/components/KycPrompt";
 import { base } from "thirdweb/chains";
 import { getThirdwebClient } from "@/lib/thirdweb-client";
@@ -14,10 +20,11 @@ import { cn } from "@/lib/ui";
 import { slideInFromRight, mobileMenuVariants, menuItemVariants } from "@/lib/motion";
 
 const navItems = [
-  { href: "/#tiers", label: "Pre‑Launch Voucher NFT" },
-  { href: "/#how-it-works", label: "How It Works" },
-  { href: "/#about", label: "About" },
-  { href: "/terms", label: "Terms" },
+  { href: "#project-malibu", label: "Project Malibu" },
+  { href: "#malibu-program", label: "Program" },
+  { href: "#how-it-works", label: "How It Works" },
+  { href: "#tiers", label: "Membership Tiers" },
+  { href: "#booking", label: "Book a Chat" },
 ];
 
 export default function Header() {
@@ -26,6 +33,8 @@ export default function Header() {
   const { kycEnabled, verified, refresh } = useKycStatus();
   const [activeSection, setActiveSection] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [connectModalOpen, setConnectModalOpen] = useState(false);
+  const account = useActiveAccount();
 
   // Get client for ConnectButton
   const client = useMemo(() => {
@@ -56,21 +65,29 @@ export default function Header() {
           }
         });
       },
-      { threshold: 0.5, rootMargin: "-100px 0px -50% 0px" }
+      { threshold: 0.3, rootMargin: "-100px 0px -50% 0px" }
     );
 
+    // Observe all sections from navItems
     navItems.forEach(({ href }) => {
-      const id = href.split("#")[1];
+      const id = href.startsWith("#") ? href.slice(1) : href.split("#")[1];
       if (id) {
         const element = document.getElementById(id);
         if (element) observer.observe(element);
       }
     });
 
+    // Also observe hero section
+    const heroElement = document.getElementById("hero");
+    if (heroElement) observer.observe(heroElement);
+
     return () => observer.disconnect();
   }, []);
 
   const isActive = (href: string) => {
+    if (href.startsWith("#")) {
+      return activeSection === href;
+    }
     if (href.startsWith("/#")) {
       return activeSection === href.slice(1);
     }
@@ -90,27 +107,28 @@ export default function Header() {
       )}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 md:h-18">
+        <div className="flex justify-between items-center h-16 md:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center group">
+          <Link href="/" className="flex items-center group flex-shrink-0">
             <Image
               src={getImagePath("/images/smartdeeds.png")}
               alt="SmartDeeds"
-              width={180}
-              height={40}
-              className="h-8 w-auto transition-transform group-hover:scale-105"
+              width={200}
+              height={60}
+              className="h-7 sm:h-8 md:h-10 lg:h-12 w-auto max-w-[120px] sm:max-w-[140px] md:max-w-[180px] lg:max-w-[200px] object-contain transition-transform group-hover:scale-105"
               priority
+              unoptimized
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-4 xl:gap-6">
             {navItems.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
                 className={cn(
-                  "text-sm font-medium transition-all duration-200",
+                  "text-sm font-medium transition-all duration-200 relative",
                   "hover:text-yellowish",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellowish rounded-md px-2 py-1",
                   isActive(href)
@@ -122,7 +140,7 @@ export default function Header() {
                 {isActive(href) && (
                   <motion.div
                     layoutId="activeSection"
-                    className="h-0.5 bg-yellowish mt-1"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-yellowish"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
@@ -130,16 +148,18 @@ export default function Header() {
             ))}
 
             {client && (
-              <div className="ml-2 scale-90 origin-right">
-                <div
-                  className="rounded-lg overflow-hidden"
-                  style={{
-                    backgroundColor: "#EEFE93",
-                    color: "#000000",
-                  }}
-                >
+              <div className="ml-2 flex-shrink-0">
+                <div className={cn(
+                  "relative rounded-lg overflow-hidden backdrop-blur-md border transition-all",
+                  account 
+                    ? "bg-white/5 border-white/10 hover:border-white/20 [&_button]:!bg-transparent [&_button]:!text-white [&_button:hover]:!text-yellowish [&_button]:!border-none [&_button]:!font-medium [&_button]:!text-sm [&_button]:!px-4 [&_button]:!py-2"
+                    : "bg-yellowish/10 border-yellowish/30 hover:border-yellowish/50 [&_button]:!bg-yellowish [&_button]:!text-black [&_button:hover]:!bg-yellowish/90 [&_button]:!border-none [&_button]:!font-semibold [&_button]:!text-sm [&_button]:!px-4 [&_button]:!py-2"
+                )}>
                   <div className="relative">
-                    <ConnectButton client={client} chain={base} />
+                    <ConnectButton 
+                      client={client} 
+                      chain={base}
+                    />
                     {kycEnabled && !verified && (
                       <button
                         type="button"
@@ -155,29 +175,50 @@ export default function Header() {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-2">
+          <div className="lg:hidden flex items-center gap-2">
             {client && (
-              <div className="scale-75">
-                <div
-                  className="rounded-lg overflow-hidden"
-                  style={{
-                    backgroundColor: "#EEFE93",
-                    color: "#000000",
-                  }}
+              <>
+                {/* Icon-only button for mobile */}
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setConnectModalOpen(true)}
+                  className="p-2 rounded-lg bg-yellowish/10 backdrop-blur-md border border-yellowish/30 hover:border-yellowish/50 hover:bg-yellowish/20 transition-all text-yellowish"
+                  aria-label="Connect wallet"
                 >
-                  <div className="relative">
-                    <ConnectButton client={client} chain={base} />
-                    {kycEnabled && !verified && (
-                      <button
-                        type="button"
-                        aria-label="Open KYC verification"
-                        className="absolute inset-0 z-10 bg-transparent cursor-pointer"
-                        onClick={() => setKycOpen(true)}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
+                  <Wallet className="w-5 h-5" />
+                </motion.button>
+                
+                {/* Connect Modal */}
+                <Dialog open={connectModalOpen} onOpenChange={setConnectModalOpen}>
+                  <DialogContent className="max-w-md w-full bg-zinc-900 border-white/10 p-6">
+                    <VisuallyHidden>
+                      <DialogTitle>Connect Wallet</DialogTitle>
+                    </VisuallyHidden>
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-white mb-4 text-center">
+                        Connect Your Wallet
+                      </h3>
+                      <div className="relative w-full [&_button]:!w-full [&_button]:!bg-yellowish [&_button]:!text-black [&_button:hover]:!bg-yellowish/90 [&_button]:!border-none [&_button]:!font-semibold [&_button]:!rounded-lg [&_button]:!h-12 [&_button]:!text-base">
+                        <ConnectButton 
+                          client={client} 
+                          chain={base}
+                        />
+                        {kycEnabled && !verified && (
+                          <button
+                            type="button"
+                            aria-label="Open KYC verification"
+                            className="absolute inset-0 z-10 bg-transparent cursor-pointer"
+                            onClick={() => {
+                              setConnectModalOpen(false);
+                              setKycOpen(true);
+                            }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </>
             )}
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -199,7 +240,7 @@ export default function Header() {
               animate="open"
               exit="closed"
               variants={mobileMenuVariants}
-              className="md:hidden overflow-hidden"
+              className="lg:hidden overflow-hidden"
             >
               <div className="py-4 space-y-1 border-t border-white/10">
                 {navItems.map(({ href, label }, i) => (

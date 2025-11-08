@@ -1,165 +1,225 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react'
+import useEmblaCarousel from 'embla-carousel-react'
 import { PUBLICATIONS } from '@/lib/publications'
 import { getImagePath } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { fadeInUp, staggerContainer } from '@/lib/motion'
 
 export default function PublicationsCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    align: 'start',
+    slidesToScroll: 1,
+    breakpoints: {
+      '(min-width: 768px)': { slidesToScroll: 1 },
+      '(min-width: 1024px)': { slidesToScroll: 2 }
+    }
+  })
+  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true)
+  const [nextBtnDisabled, setNextBtnDisabled] = useState(true)
+  const autoplayIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const isHoveredRef = useRef(false)
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % PUBLICATIONS.length)
-    }, 5000)
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) {
+      isHoveredRef.current = true
+      emblaApi.scrollPrev()
+      // Resume autoplay after a delay
+      setTimeout(() => {
+        isHoveredRef.current = false
+      }, 3000)
+    }
+  }, [emblaApi])
 
-    return () => clearInterval(timer)
+  const scrollNext = useCallback(() => {
+    if (emblaApi) {
+      isHoveredRef.current = true
+      emblaApi.scrollNext()
+      // Resume autoplay after a delay
+      setTimeout(() => {
+        isHoveredRef.current = false
+      }, 3000)
+    }
+  }, [emblaApi])
+
+  const onSelect = useCallback((emblaApi: any) => {
+    setPrevBtnDisabled(!emblaApi.canScrollPrev())
+    setNextBtnDisabled(!emblaApi.canScrollNext())
   }, [])
 
-  const currentPublication = PUBLICATIONS[currentIndex]
+  // Auto-scroll functionality
+  const startAutoplay = useCallback(() => {
+    if (autoplayIntervalRef.current) {
+      clearInterval(autoplayIntervalRef.current)
+    }
+    
+    autoplayIntervalRef.current = setInterval(() => {
+      if (!isHoveredRef.current && emblaApi) {
+        if (emblaApi.canScrollNext()) {
+          emblaApi.scrollNext()
+        } else {
+          // Loop back to start
+          emblaApi.scrollTo(0)
+        }
+      }
+    }, 5000) // Auto-scroll every 5 seconds
+  }, [emblaApi])
+
+  const stopAutoplay = useCallback(() => {
+    if (autoplayIntervalRef.current) {
+      clearInterval(autoplayIntervalRef.current)
+      autoplayIntervalRef.current = null
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!emblaApi) return
+
+    onSelect(emblaApi)
+    emblaApi.on('reInit', onSelect)
+    emblaApi.on('select', onSelect)
+    
+    // Start autoplay when carousel is ready
+    startAutoplay()
+
+    return () => {
+      stopAutoplay()
+    }
+  }, [emblaApi, onSelect, startAutoplay, stopAutoplay])
 
   return (
     <section 
-      className="publications bg-black text-white"
+      className="py-20 md:py-24 bg-zinc-900 relative"
       id="publications"
-      style={{ padding: '6rem 5%', background: '#000000', color: '#ffffff' }}
     >
-      <div className="max-w-7xl mx-auto">
+      {/* Subtle texture overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(238,254,147,0.02)_0%,transparent_70%)] pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight">
-            Publications
-          </h2>
-        </div>
+        <motion.div
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="text-center mb-16"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-4xl md:text-5xl font-bold text-white mb-6"
+          >
+            <span className="text-yellowish">Publications</span>
+          </motion.h2>
+        </motion.div>
 
         {/* Carousel Container */}
-        <div className="max-w-5xl mx-auto relative">
-          <div 
-            className="relative rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 bg-white"
-          >
+        <motion.div
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="max-w-7xl mx-auto relative"
+        >
+          <div className="relative">
             {/* Navigation Arrows */}
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                setCurrentIndex(
-                  (prev) => (prev - 1 + PUBLICATIONS.length) % PUBLICATIONS.length
-                )
-              }}
-              className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all z-20 border border-gray-200 hover:border-[#EEFE93] hover:shadow-[#EEFE93]/30"
+            <Button
+              onClick={scrollPrev}
+              disabled={prevBtnDisabled}
+              variant="ghost"
+              size="icon"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-6 h-10 w-10 md:h-12 md:w-12 rounded-full bg-black/60 backdrop-blur-md border border-white/10 hover:bg-black/80 hover:border-yellowish/50 hover:scale-110 transition-all shadow-xl z-20 disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Previous publication"
             >
-              <svg
-                className="w-5 h-5 md:w-6 md:h-6 text-gray-800"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2.5"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                setCurrentIndex((prev) => (prev + 1) % PUBLICATIONS.length)
-              }}
-              className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all z-20 border border-gray-200 hover:border-[#EEFE93] hover:shadow-[#EEFE93]/30"
+              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            </Button>
+            <Button
+              onClick={scrollNext}
+              disabled={nextBtnDisabled}
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-6 h-10 w-10 md:h-12 md:w-12 rounded-full bg-black/60 backdrop-blur-md border border-white/10 hover:bg-black/80 hover:border-yellowish/50 hover:scale-110 transition-all shadow-xl z-20 disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Next publication"
             >
-              <svg
-                className="w-5 h-5 md:w-6 md:h-6 text-gray-800"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2.5"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+              <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            </Button>
 
-            <Link
-              href={currentPublication.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block relative min-h-[450px] md:min-h-[500px] p-12 md:p-16 lg:p-20 flex flex-col justify-center group"
+            {/* Embla Carousel */}
+            <div 
+              className="overflow-hidden" 
+              ref={emblaRef}
+              onMouseEnter={() => {
+                isHoveredRef.current = true
+              }}
+              onMouseLeave={() => {
+                isHoveredRef.current = false
+              }}
             >
-              {/* Content Section */}
-              <div className="flex-1 flex flex-col justify-center items-center text-center space-y-8">
-                {/* Publication Logo */}
-                <div className="relative w-full max-w-[320px] h-24 md:h-28 lg:h-32 mx-auto mb-6 flex items-center justify-center">
-                  {currentPublication.logo ? (
-                    <Image
-                      src={getImagePath(currentPublication.logo)}
-                      alt={currentPublication.title}
-                      width={320}
-                      height={128}
-                      className="object-contain w-full h-full opacity-95 group-hover:opacity-100 transition-opacity"
-                      unoptimized
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement
-                        if (target.parentElement) {
-                          target.parentElement.innerHTML = `<span class="text-gray-800 font-bold text-3xl">${currentPublication.title}</span>`
-                        }
-                      }}
-                    />
-                  ) : (
-                    <span className="text-gray-800 font-bold text-3xl">{currentPublication.title}</span>
-                  )}
-                </div>
-
-                {/* Publication Title */}
-                <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 group-hover:text-[#EEFE93] transition-colors">
-                  {currentPublication.title}
-                </h3>
-
-                {/* Excerpt */}
-                <p className="text-lg md:text-xl lg:text-2xl text-gray-700 max-w-2xl mx-auto leading-relaxed font-light">
-                  {currentPublication.excerpt}
-                </p>
-
-                {/* Read Article Link */}
-                <div className="flex items-center justify-center gap-2 text-gray-800 hover:text-[#EEFE93] text-base md:text-lg font-semibold mt-8 group-hover:gap-3 transition-all">
-                  <span>Read Article</span>
-                  <svg
-                    className="w-5 h-5 md:w-6 md:h-6"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+              <div className="flex gap-4 md:gap-6">
+                {PUBLICATIONS.map((publication, index) => (
+                  <div
+                    key={index}
+                    className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0"
                   >
-                    <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </div>
-              </div>
-            </Link>
+                    <Link
+                      href={publication.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block h-full group"
+                    >
+                      <Card className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-lg hover:border-yellowish/50 hover:shadow-xl hover:shadow-yellowish/10 transition-all duration-300 h-full flex flex-col">
+                        <CardContent className="p-6 md:p-8 flex flex-col flex-1">
+                          {/* Publication Logo with white background */}
+                          <div className="relative w-full h-16 md:h-20 mb-4 flex items-center justify-center bg-white/90 rounded-lg p-3 md:p-4">
+                            {publication.logo ? (
+                              <Image
+                                src={getImagePath(publication.logo)}
+                                alt={publication.title}
+                                width={200}
+                                height={80}
+                                className="object-contain w-full h-full opacity-90 group-hover:opacity-100 transition-opacity"
+                                unoptimized
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement
+                                  if (target.parentElement) {
+                                    target.parentElement.innerHTML = `<span class="text-gray-900 font-bold text-lg">${publication.title}</span>`
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <span className="text-gray-900 font-bold text-lg">{publication.title}</span>
+                            )}
+                          </div>
 
-            {/* Navigation Dots */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center gap-3 z-20">
-              {PUBLICATIONS.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    setCurrentIndex(index)
-                  }}
-                  className={`rounded-full transition-all duration-300 ${
-                    index === currentIndex 
-                      ? 'w-3.5 h-3.5 bg-gray-800 shadow-lg shadow-gray-800/30' 
-                      : 'w-3 h-3 bg-gray-400 hover:bg-gray-500'
-                  }`}
-                  aria-label={`Go to publication ${index + 1}`}
-                />
-              ))}
+                          {/* Publication Title */}
+                          <h3 className="text-lg md:text-xl font-bold text-white mb-2 group-hover:text-yellowish transition-colors line-clamp-2">
+                            {publication.title}
+                          </h3>
+
+                          {/* Excerpt */}
+                          <p className="text-sm md:text-base text-gray-300 leading-relaxed mb-4 flex-grow line-clamp-3">
+                            {publication.excerpt}
+                          </p>
+
+                          {/* Read Article Link */}
+                          <div className="flex items-center gap-2 text-gray-300 hover:text-yellowish text-xs md:text-sm font-semibold mt-auto group-hover:gap-3 transition-all">
+                            <span>Read Article</span>
+                            <ExternalLink className="w-3 h-3 md:w-4 md:h-4" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

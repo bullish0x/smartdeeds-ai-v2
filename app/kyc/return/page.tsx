@@ -212,6 +212,25 @@ function KycReturnContent() {
                   </p>
                 </motion.div>
               )}
+
+              {/* Privacy Notice */}
+              {(status === 'processing' || status === 'none') && (
+                <div className="pt-6 border-t border-white/10">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                    <p className="text-sm">
+                      <span className="text-gray-400">Secured by</span>{' '}
+                      <span className="font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                        Stripe
+                      </span>
+                    </p>
+                  </div>
+                  <p className="text-xs text-gray-400 text-center leading-relaxed">
+                    SmartDeeds and SolsLot do not have access to any of your KYC information. 
+                    We only receive a pass or fail result to grant access.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>

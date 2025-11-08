@@ -68,7 +68,11 @@ export default function SwapWidgetSection() {
             }}
           />
         ) : (
-          <BuyWidget client={client} chain={base} />
+          <BuyWidget 
+            client={client} 
+            chain={base}
+            tokenAddress="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" // USDC on Base
+          />
         )}
       </div>
     </div>

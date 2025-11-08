@@ -75,18 +75,12 @@ export default function ProjectMalibu() {
     setTimeout(() => setIsPaused(false), 4000);
   };
 
-  const goToImage = (index: number) => {
-    setCurrentIndex(index);
-    // Reset autoplay after manual navigation
-    setIsPaused(true);
-    setTimeout(() => setIsPaused(false), 4000);
-  };
-
   return (
     <section id="project-malibu" className="py-16 bg-black">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-          <div>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* CURRENT LAYOUT: Side-by-side (40/60) */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 lg:items-start">
+          <div className="lg:col-span-2 lg:sticky lg:top-24">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               {PROJECT_MALIBU.name}
             </h2>
@@ -160,10 +154,10 @@ export default function ProjectMalibu() {
           </div>
 
           {/* Enhanced Image Gallery */}
-          <div className="relative space-y-4">
+          <div className="relative lg:col-span-3">
             {/* Main Image Display */}
             <div
-              className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-2xl group"
+              className="relative aspect-[4/3] lg:aspect-[3/2] lg:min-h-[600px] rounded-lg overflow-hidden shadow-2xl group"
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
             >
@@ -186,17 +180,17 @@ export default function ProjectMalibu() {
                 aria-label="View full size image"
               />
 
-              {/* Navigation Arrows */}
+              {/* Navigation Arrows - More prominent */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   prevImage();
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border border-white/20 text-gray-800 rounded-full p-2 shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border border-white/20 text-gray-800 rounded-full p-3 shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10 hover:scale-110"
                 aria-label="Previous image"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -215,11 +209,11 @@ export default function ProjectMalibu() {
                   e.stopPropagation();
                   nextImage();
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border border-white/20 text-gray-800 rounded-full p-2 shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border border-white/20 text-gray-800 rounded-full p-3 shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10 hover:scale-110"
                 aria-label="Next image"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -234,43 +228,9 @@ export default function ProjectMalibu() {
               </button>
 
               {/* Image Counter */}
-              <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm font-medium">
+              <div className="absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
                 {currentIndex + 1} / {GALLERY_IMAGES.length}
               </div>
-            </div>
-
-            {/* Thumbnail Navigation */}
-            <div
-              className="flex gap-2 overflow-x-auto py-2 px-2 scrollbar-hide"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-            >
-              {GALLERY_IMAGES.map((image, index) => (
-                <div
-                  key={index}
-                  className={`flex-shrink-0 transition-all ${
-                    currentIndex === index ? "p-2 -m-2" : ""
-                  }`}
-                >
-                  <button
-                    onClick={() => goToImage(index)}
-                    className={`relative w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden transition-all ${
-                      currentIndex === index
-                        ? "ring-2 ring-white scale-105 shadow-lg"
-                        : "opacity-60 hover:opacity-100 hover:scale-[1.02]"
-                    }`}
-                    aria-label={`View image ${index + 1}`}
-                  >
-                    <Image
-                      src={image}
-                      alt={`Thumbnail ${index + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="96px"
-                    />
-                  </button>
-                </div>
-              ))}
             </div>
           </div>
         </div>

@@ -64,11 +64,22 @@ export default function KycStart() {
             variants={staggerContainer}
             className="text-center mb-12"
           >
-            <motion.div variants={fadeInUp} className="flex items-center justify-center gap-2 mb-4">
+            <motion.div variants={fadeInUp} className="flex flex-col items-center gap-3 mb-6">
               <ShieldCheck className="w-10 h-10 text-yellowish" />
               <Badge variant="outline" className="border-yellowish/50 text-yellowish bg-yellowish/10 px-4 py-2 text-base">
                 Secure Verification
               </Badge>
+              
+              {/* Prominent Stripe Badge */}
+              <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/30">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                  <span className="text-sm font-semibold text-white">Powered by</span>
+                  <span className="text-lg font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                    Stripe
+                  </span>
+                </div>
+              </div>
             </motion.div>
             
             <motion.h1 
@@ -165,11 +176,27 @@ export default function KycStart() {
                   )}
                 </Button>
 
-                {/* Privacy Notice */}
-                <div className="pt-4 border-t border-white/10">
-                  <p className="text-xs text-gray-400 text-center">
-                    Your information is encrypted and secure. We use industry-standard verification to ensure the safety of all members.
-                  </p>
+                {/* Privacy & Security Notice */}
+                <div className="pt-6 border-t border-white/10 space-y-4">
+                  <div className="flex items-start gap-3 p-4 rounded-lg bg-gradient-to-r from-purple-500/5 to-blue-500/5 border border-purple-500/20">
+                    <ShieldCheck className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="text-base font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                        Powered by Stripe
+                      </p>
+                      <p className="text-sm text-gray-300">
+                        Industry-leading secure identity verification trusted by millions
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-yellowish/5 border border-yellowish/20 rounded-lg p-4">
+                    <p className="text-xs text-gray-300 leading-relaxed">
+                      <strong className="text-yellowish">Your privacy is protected:</strong> SmartDeeds and SolsLot do not have access to any of your KYC information. 
+                      We only receive a pass or fail result to grant access. Your verification session is stored locally on your device—if you visit from a new device, 
+                      you may be asked to verify again.
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>

@@ -8,16 +8,26 @@ import {
   NFTMedia,
   NFTName,
   ClaimButton,
+  ConnectButton,
 } from "thirdweb/react";
 import { getContract } from "thirdweb/contract";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { base } from "thirdweb/chains";
+import { motion } from "framer-motion";
+import { Minus, Plus, Shield, ExternalLink } from "lucide-react";
 import { getThirdwebClient } from "@/lib/thirdweb-client";
 import { toast } from "@/hooks/use-toast";
 import { getActiveClaimCondition } from "thirdweb/extensions/erc1155";
 import { getCurrencyMetadata } from "thirdweb/extensions/erc20";
 import KycPrompt from "@/components/KycPrompt";
 import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { cn } from "@/lib/ui";
 
 interface NFTTierCardProps {
   tokenId: number;
@@ -48,6 +58,8 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
     decimals: number;
   } | null>(null);
   const [kycOpen, setKycOpen] = useState(false);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [connectModalOpen, setConnectModalOpen] = useState(false);
   const hasFetched = useRef(false);
 
   // client
@@ -235,141 +247,134 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
 
   if (!contract || !client) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-        <div className="relative h-64 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-          <div className="text-gray-400 dark:text-gray-500">Loading...</div>
+      <Card className="bg-zinc-900 border-white/10 overflow-hidden">
+        <div className="relative aspect-square bg-zinc-800 flex items-center justify-center">
+          <div className="text-gray-500">Loading...</div>
         </div>
-        <div className="p-6">
-          <div className="h-7 bg-gray-200 dark:bg-gray-700 rounded mb-2 animate-pulse"></div>
-          <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded mb-4 animate-pulse"></div>
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-4 animate-pulse"></div>
-        </div>
-      </div>
+        <CardContent className="p-4">
+          <div className="h-5 bg-zinc-800 rounded mb-2 animate-pulse"></div>
+          <div className="h-7 bg-zinc-800 rounded mb-3 w-2/3 animate-pulse"></div>
+          <div className="h-16 bg-zinc-800 rounded mb-3 animate-pulse"></div>
+          <div className="h-11 bg-zinc-800 rounded animate-pulse"></div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
     <NFTProvider contract={contract} tokenId={BigInt(tokenId)}>
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 hover:border-yellowish transition-all hover:shadow-xl transform hover:-translate-y-2">
-        <div className="relative h-64 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-          <NFTMedia
-            className="object-contain w-full h-full"
-            loadingComponent={
-              <div className="text-gray-400 dark:text-gray-500">
-                Loading image...
+      <motion.div
+        whileHover={{ y: -4 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Card className="bg-zinc-900 border-white/10 overflow-hidden hover:border-yellowish/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-yellowish/20 group h-full">
+          {/* NFT Image - Top (Clickable to expand) */}
+          <div 
+            className="relative aspect-square bg-zinc-800 flex items-center justify-center overflow-hidden cursor-pointer"
+            onClick={() => setImageModalOpen(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setImageModalOpen(true);
+              }
+            }}
+            aria-label="Click to view full size image"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-900/50 z-10 group-hover:bg-zinc-900/20 transition-colors" />
+            {/* Hover overlay to indicate clickability */}
+            <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+              <div className="text-white text-sm font-medium bg-black/60 px-4 py-2 rounded-lg backdrop-blur-sm">
+                Click to expand
               </div>
-            }
-          />
-        </div>
-
-        <div className="p-6 overflow-visible">
-          <h3 className="text-2xl font-bold text-black dark:text-white mb-2">
-            <NFTName
+            </div>
+            <NFTMedia
+              className="object-contain w-full h-full transition-transform duration-500 group-hover:scale-110"
               loadingComponent={
-                <span className="text-gray-400">Loading name...</span>
+                <div className="text-gray-500">
+                  Loading image...
+                </div>
               }
             />
-          </h3>
-
-          <div className="mb-4">
-            <p className="text-3xl font-bold text-black dark:text-white">
-              {isLoading && !claimCondition
-                ? "Loading..."
-                : claimCondition
-                  ? formatPrice(
-                      claimCondition.pricePerToken,
-                      claimCondition.currency,
-                    )
-                  : "Price unavailable"}
-            </p>
-            {claimCondition && (
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                per Pre-Launch Voucher
-              </p>
-            )}
           </div>
+
+          {/* Content - Bottom (Compact) */}
+          <CardContent className="p-4 flex flex-col">
+            {/* Title & Price - Combined header */}
+            <div className="mb-3 pb-3 border-b border-white/10">
+              <h3 className="text-lg font-bold text-white mb-1.5 min-h-[3.5rem] flex items-center">
+                <NFTName
+                  loadingComponent={
+                    <span className="text-gray-400">Loading...</span>
+                  }
+                />
+              </h3>
+              <div className="text-2xl font-bold text-yellowish">
+                {isLoading && !claimCondition
+                  ? "Loading..."
+                  : claimCondition
+                    ? formatPrice(
+                        claimCondition.pricePerToken,
+                        claimCondition.currency,
+                      )
+                    : "Price unavailable"}
+              </div>
+            </div>
 
           {/* ====== CLAIM CONDITION PRESENT ====== */}
           {claimCondition && (
             <>
-              {/* matt-test: concise stats line */}
-              <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
-                {claimCondition.maxClaimableSupply > BigInt(0)
-                  ? claimCondition.maxClaimableSupply.toString().length > 6 ||
-                    claimCondition.supplyClaimed.toString().length > 6
-                    ? "Limited"
-                    : `${claimCondition.supplyClaimed.toString()} / ${claimCondition.maxClaimableSupply.toString()} claimed`
-                  : "Open"}
-                {" · "}
-                {claimCondition.quantityLimitPerWallet > BigInt(0)
-                  ? "Per-wallet limit applies"
-                  : "No wallet limit"}
-              </div>
-
-              {/* main: detailed availability + phase + allowlist panel */}
-              <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm space-y-2">
+              {/* Compact Details Panel */}
+              <div className="mb-3 p-2.5 bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-lg space-y-1.5 backdrop-blur-sm text-xs">
+                {/* Availability */}
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Available:
-                  </span>
-                  <span className="text-black dark:text-white font-semibold">
+                  <span className="text-gray-400">Available:</span>
+                  <span className="text-white font-medium">
                     {claimCondition.maxClaimableSupply > BigInt(0)
-                      ? `${claimCondition.supplyClaimed.toString()} / ${claimCondition.maxClaimableSupply.toString()} claimed`
+                      ? `${claimCondition.supplyClaimed.toString()} / ${claimCondition.maxClaimableSupply.toString()}`
                       : "Unlimited"}
                   </span>
                 </div>
 
+                {/* Max per wallet */}
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Max per wallet:
-                  </span>
-                  <span className="text-black dark:text-white font-semibold">
+                  <span className="text-gray-400">Max per wallet:</span>
+                  <span className="text-white font-medium">
                     {claimCondition.quantityLimitPerWallet > BigInt(0)
                       ? claimCondition.quantityLimitPerWallet.toString()
                       : "Unlimited"}
                   </span>
                 </div>
 
+                {/* Status and Allowlist */}
                 {(() => {
-                  const currentTimestamp = BigInt(
-                    Math.floor(Date.now() / 1000),
-                  );
-                  const hasStarted =
-                    claimCondition.startTimestamp <= currentTimestamp;
-                  const startDate = new Date(
-                    Number(claimCondition.startTimestamp) * 1000,
-                  );
-                  const hasAllowlist =
-                    claimCondition.merkleRoot &&
-                    claimCondition.merkleRoot !==
-                      "0x0000000000000000000000000000000000000000000000000000000000000000";
+                  const currentTimestamp = BigInt(Math.floor(Date.now() / 1000));
+                  const hasStarted = claimCondition.startTimestamp <= currentTimestamp;
+                  const startDate = new Date(Number(claimCondition.startTimestamp) * 1000);
+                  const hasAllowlist = claimCondition.merkleRoot && 
+                    claimCondition.merkleRoot !== "0x0000000000000000000000000000000000000000000000000000000000000000";
 
                   return (
                     <>
+                      {/* Status */}
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 dark:text-gray-400">
-                          Claim phase:
-                        </span>
-                        <span
-                          className={`font-semibold ${
-                            hasStarted
-                              ? "text-green-600 dark:text-green-400"
-                              : "text-orange-600 dark:text-orange-400"
-                          }`}
+                        <span className="text-gray-400">Status:</span>
+                        <Badge
+                          variant={hasStarted ? "default" : "secondary"}
+                          className={`text-[10px] py-0 h-4 px-2 ${hasStarted ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-orange-500/20 text-orange-400 border-orange-500/30"}`}
                         >
-                          {hasStarted
-                            ? "Active"
-                            : `Starts ${startDate.toLocaleString()}`}
-                        </span>
+                          {hasStarted ? "Active" : `Starts ${startDate.toLocaleDateString()}`}
+                        </Badge>
                       </div>
+
+                      {/* Allowlist */}
                       {hasAllowlist && (
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600 dark:text-gray-400">
-                            Allowlist:
-                          </span>
-                          <span className="text-blue-600 dark:text-blue-400 font-semibold">
+                          <span className="text-gray-400">Allowlist:</span>
+                          <Badge variant="outline" className="border-blue-500/30 text-blue-400 text-[10px] py-0 h-4 px-2">
                             Required
-                          </span>
+                          </Badge>
                         </div>
                       )}
                     </>
@@ -381,52 +386,50 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
 
           {/* ====== NO CLAIM CONDITION (configured later) ====== */}
           {!claimCondition && !isLoading && (
-            <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-sm">
-              <div className="flex flex-col gap-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Status:
-                  </span>
-                  <span className="text-yellow-600 dark:text-yellow-400 font-semibold">
-                    Not Available Yet
-                  </span>
+            <Alert className="mb-4 border-yellow-500/30 bg-yellow-500/10">
+              <AlertDescription className="text-yellow-200">
+                <div className="flex flex-col gap-2">
+                  <p className="font-semibold">Not Available Yet</p>
+                  <p className="text-xs text-yellow-300/90">
+                    Claim conditions need to be configured. Visit the{" "}
+                    <a
+                      href={`https://thirdweb.com/${base.id}/${CONTRACT_CONFIG.address}/claim-conditions`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-yellow-400 hover:underline inline-flex items-center gap-1"
+                    >
+                      thirdweb dashboard
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </p>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Claim conditions need to be set up for this Pre-Launch
-                  Voucher. Visit the{" "}
-                  <a
-                    href={`https://thirdweb.com/${base.id}/${CONTRACT_CONFIG.address}/claim-conditions`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    thirdweb dashboard
-                  </a>{" "}
-                  to configure.
-                </p>
-              </div>
-            </div>
+              </AlertDescription>
+            </Alert>
           )}
 
           {error && (
-            <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg text-sm">
-              {error}
-            </div>
+            <Alert className="mb-4 border-red-500/30 bg-red-500/10">
+              <AlertDescription className="text-red-200">
+                {error}
+              </AlertDescription>
+            </Alert>
           )}
 
-          {/* Quantity Selector */}
-          <div className="mb-4 w-full">
-            <label className="block text-sm font-medium text-black dark:text-white mb-2 w-full">
-              Quantity
-            </label>
-            <div className="flex items-center gap-2 w-full">
-              <button
+          {/* Spacer to push button to bottom */}
+          <div className="flex-grow" />
+
+          {/* Quantity Selector - Compact */}
+          <div className="mb-3 w-full">
+            <div className="flex items-center gap-2 w-full mb-2">
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
-                className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
+                className="h-8 w-8 border-white/20 hover:bg-white/10"
               >
-                -
-              </button>
+                <Minus className="w-3 h-3" />
+              </Button>
               <input
                 type="number"
                 min="1"
@@ -446,9 +449,11 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
                       : undefined;
                   setQuantity(max ? Math.min(val, max) : Math.max(1, val));
                 }}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded text-center text-black dark:text-white bg-white dark:bg-gray-800"
+                className="flex-1 px-3 py-1.5 border border-white/20 bg-white/5 rounded-lg text-center text-white text-sm focus:outline-none focus:ring-2 focus:ring-yellowish focus:border-transparent"
               />
-              <button
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={() => {
                   const max =
                     claimCondition?.quantityLimitPerWallet &&
@@ -463,30 +468,20 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
                     ? quantity >= Number(claimCondition.quantityLimitPerWallet)
                     : false
                 }
-                className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
+                className="h-8 w-8 border-white/20 hover:bg-white/10"
               >
-                +
-              </button>
+                <Plus className="w-3 h-3" />
+              </Button>
             </div>
 
-            {claimCondition && (
-              <>
-                <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center">
-                  Total:{" "}
-                  {totalPrice > BigInt(0)
-                    ? formatPrice(totalPrice, claimCondition.currency)
-                    : "Free"}
-                </div>
-                <div className="mt-3 text-xs text-gray-500 dark:text-gray-400 text-center">
-                  <Link href="/terms" className="underline hover:no-underline">
-                    Presale terms apply →
-                  </Link>
-                </div>
-              </>
+            {claimCondition && totalPrice > BigInt(0) && (
+              <div className="text-sm text-center text-gray-300 mb-2 font-medium">
+                Total: <span className="text-yellowish">{formatPrice(totalPrice, claimCondition.currency)}</span>
+              </div>
             )}
           </div>
 
-          {/* Claim Button */}
+          {/* Claim Button - Always consistent yellowish appearance */}
           {client &&
           contract &&
           account &&
@@ -494,12 +489,14 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
           chain?.id === base.id ? (
             kycEnabled && !kycVerified ? (
               <>
-                <button
+                <Button
                   onClick={() => setKycOpen(true)}
-                  className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                  variant="yellowish"
+                  className="w-full h-11"
                 >
+                  <Shield className="w-4 h-4 mr-2" />
                   Verify to Mint
-                </button>
+                </Button>
                 <KycPrompt open={kycOpen} onOpenChange={setKycOpen} />
               </>
             ) : (
@@ -515,7 +512,7 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
                 onTransactionConfirmed={() => {
                   toast({
                     title: "Mint Successful!",
-                    description: `Successfully minted ${quantity} Pre-Launch Voucher${quantity > 1 ? "s" : ""}!`,
+                    description: `Successfully minted ${quantity} voucher${quantity > 1 ? "s" : ""}!`,
                   });
                   setQuantity(1);
                 }}
@@ -524,31 +521,93 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
                     title: "Mint Failed",
                     description:
                       error.message ||
-                      "Failed to mint Pre-Launch Voucher. Please try again.",
+                      "Failed to mint voucher. Please try again.",
                     variant: "destructive",
                   });
                 }}
-                className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                className="w-full bg-yellowish text-black h-11 rounded-lg font-bold hover:bg-yellowish/90 transition-all shadow-md hover:shadow-glow"
               >
-                Mint {quantity} Pre-Launch Voucher{quantity > 1 ? "s" : ""}
+                Mint {quantity} Voucher{quantity > 1 ? "s" : ""}
               </ClaimButton>
             )
           ) : (
-            <button
-              disabled
-              className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold opacity-50 cursor-not-allowed"
-            >
-              {!account
-                ? "Connect Wallet to Mint"
-                : chain?.id !== base.id
-                  ? "Switch to Base Network"
-                  : !isClaimPhaseActive
-                    ? "Claim Phase Not Started"
-                    : "Loading..."}
-            </button>
+            <>
+              <Button
+                onClick={() => {
+                  if (!account) {
+                    setConnectModalOpen(true);
+                  }
+                }}
+                variant="yellowish"
+                className={cn(
+                  "w-full h-11",
+                  !account ? "cursor-pointer" : "opacity-60 cursor-not-allowed"
+                )}
+                disabled={!!account}
+              >
+                {!account
+                  ? "Connect Wallet to Mint"
+                  : chain?.id !== base.id
+                    ? "Switch to Base Network"
+                    : !isClaimPhaseActive
+                      ? "Claim Phase Not Started"
+                      : "Loading..."}
+              </Button>
+              {!account && client && (
+                <Dialog open={connectModalOpen} onOpenChange={setConnectModalOpen}>
+                  <DialogContent className="max-w-md w-full bg-zinc-900 border-white/10 p-6">
+                    <VisuallyHidden>
+                      <DialogTitle>Connect Wallet</DialogTitle>
+                    </VisuallyHidden>
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-white mb-4 text-center">
+                        Connect Your Wallet
+                      </h3>
+                      <div className="relative w-full [&_button]:!w-full [&_button]:!bg-yellowish [&_button]:!text-black [&_button:hover]:!bg-yellowish/90 [&_button]:!border-none [&_button]:!font-semibold [&_button]:!rounded-lg [&_button]:!h-12 [&_button]:!text-base">
+                        <ConnectButton 
+                          client={client} 
+                          chain={base}
+                        />
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </>
           )}
-        </div>
-      </div>
+
+          {/* Terms Link - Integrated footer */}
+          <div className="mt-3 pt-2.5 border-t border-white/10 text-center">
+            <Link 
+              href="/terms" 
+              className="text-xs text-gray-400 hover:text-yellowish transition-colors inline-flex items-center gap-1"
+            >
+              <Shield className="w-3 h-3" />
+              View Terms & Conditions
+            </Link>
+          </div>
+        </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Image Expansion Modal */}
+      <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>
+        <DialogContent className="max-w-4xl w-full bg-zinc-900 border-white/10 p-0">
+          <VisuallyHidden>
+            <DialogTitle>NFT Voucher Preview</DialogTitle>
+          </VisuallyHidden>
+          <div className="relative w-full aspect-square bg-zinc-950 flex items-center justify-center">
+            <NFTMedia
+              className="object-contain w-full h-full"
+              loadingComponent={
+                <div className="text-gray-500">
+                  Loading full size image...
+                </div>
+              }
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </NFTProvider>
   );
 }

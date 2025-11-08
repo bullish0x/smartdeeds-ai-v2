@@ -1,78 +1,198 @@
+'use client'
+
 import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { fadeInUp, staggerContainer } from "@/lib/motion";
+import { getImagePath } from "@/lib/utils";
 
 export default function Footer() {
   return (
-    <footer className="bg-black dark:bg-gray-900 text-white py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-xl font-bold mb-4">SmartDeeds</h3>
-            <p className="text-gray-400 text-sm">
-              SmartDeed™ NFT and Membership Pre‑Sale (invite‑only).
+    <footer className="bg-zinc-950 text-white py-16 md:py-20 relative border-t border-white/10">
+      {/* Subtle texture overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(238,254,147,0.02)_0%,transparent_70%)] pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12"
+        >
+          {/* Brand Column */}
+          <motion.div variants={fadeInUp} className="lg:col-span-2">
+            <Link href="/" className="inline-block mb-4">
+              <Image
+                src={getImagePath("/images/smartdeeds.png")}
+                alt="SmartDeeds"
+                width={150}
+                height={45}
+                className="h-7 sm:h-8 md:h-9 w-auto object-contain"
+                priority
+                unoptimized
+              />
+            </Link>
+            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+              SmartDeed™ NFT and Membership Pre‑Sale (invite‑only). Blockchain-secured membership tiers providing exclusive access to Project Malibu—the iconic Tadao Ando-designed oceanfront estate.
             </p>
-          </div>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              Escrowed funding (per Agreement). Voucher NFT converts to SmartDeed NFT at Launch.
+            </p>
+          </motion.div>
 
-          <div>
-            <h4 className="font-semibold mb-4">Navigation</h4>
-            <ul className="space-y-2 text-sm">
+          {/* Navigation Column */}
+          <motion.div variants={fadeInUp}>
+            <h4 className="font-semibold mb-4 text-white">Navigation</h4>
+            <ul className="space-y-3 text-sm">
               <li>
                 <Link
-                  href="/#tiers"
+                  href="#project-malibu"
                   className="text-gray-400 hover:text-yellowish transition-colors"
                 >
-                  SmartDeeds Tiers
+                  Project Malibu
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/#trust"
+                  href="#trust"
+                  className="text-gray-400 hover:text-yellowish transition-colors"
+                >
+                  Trusted Infrastructure
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#about"
                   className="text-gray-400 hover:text-yellowish transition-colors"
                 >
                   About
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="#malibu-program"
+                  className="text-gray-400 hover:text-yellowish transition-colors"
+                >
+                  Malibu Program
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#how-it-works"
+                  className="text-gray-400 hover:text-yellowish transition-colors"
+                >
+                  How It Works
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#tiers"
+                  className="text-gray-400 hover:text-yellowish transition-colors"
+                >
+                  Membership Tiers
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#publications"
+                  className="text-gray-400 hover:text-yellowish transition-colors"
+                >
+                  Publications
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#benefits"
+                  className="text-gray-400 hover:text-yellowish transition-colors"
+                >
+                  Why SmartDeeds
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#booking"
+                  className="text-gray-400 hover:text-yellowish transition-colors"
+                >
+                  Book a Chat
+                </Link>
+              </li>
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
-            <h4 className="font-semibold mb-4">Legal</h4>
-            <ul className="space-y-2 text-sm">
+          {/* Legal Column */}
+          <motion.div variants={fadeInUp}>
+            <h4 className="font-semibold mb-4 text-white">Legal</h4>
+            <ul className="space-y-3 text-sm">
               <li>
                 <Link
                   href="/terms"
-                  className="text-gray-400 hover:text-yellowish transition-colors"
+                  className="text-gray-400 hover:text-yellowish transition-colors relative z-10 inline-block"
                 >
                   Terms of Service
                 </Link>
               </li>
-
               <li>
                 <Link
                   href="/kyc/start"
-                  className="text-gray-400 hover:text-yellowish transition-colors"
+                  className="text-gray-400 hover:text-yellowish transition-colors relative z-10 inline-block"
                 >
-                  KYC
+                  KYC Verification
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/membership"
+                  className="text-gray-400 hover:text-yellowish transition-colors relative z-10 inline-block"
+                >
+                  Membership
                 </Link>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
-            <h4 className="font-semibold mb-4">Program</h4>
-            <p className="text-gray-400 text-sm">
-              Escrowed funding (per Agreement)
-            </p>
-            <p className="text-gray-400 text-sm mt-2">
-              Voucher NFT converts to SmartDeed NFT at Launch
-            </p>
-          </div>
-        </div>
+          {/* Contact Column */}
+          <motion.div variants={fadeInUp}>
+            <h4 className="font-semibold mb-4 text-white">Contact</h4>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <Link
+                  href="#booking"
+                  className="text-gray-400 hover:text-yellowish transition-colors"
+                >
+                  Schedule a Chat
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    if (typeof window !== "undefined" && (window as any).Intercom) {
+                      try {
+                        (window as any).Intercom("show");
+                      } catch {}
+                    }
+                  }}
+                  className="text-gray-400 hover:text-yellowish transition-colors text-left"
+                >
+                  Support
+                </button>
+              </li>
+            </ul>
+          </motion.div>
+        </motion.div>
 
-        <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-400">
+        {/* Copyright */}
+        <motion.div
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInUp}
+          className="mt-12 pt-8 border-t border-white/10 text-center text-sm text-gray-400"
+        >
           <p>
             &copy; {new Date().getFullYear()} SmartDeeds. All rights reserved.
           </p>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );
