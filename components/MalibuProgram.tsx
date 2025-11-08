@@ -48,19 +48,19 @@ export default function MalibuProgram() {
             <TabsList className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-1.5 mb-6 grid grid-cols-3 gap-2 h-auto">
               <TabsTrigger 
                 value="property-snapshot" 
-                className="text-base md:text-lg font-semibold text-gray-400 data-[state=active]:text-yellowish data-[state=active]:bg-white/10 data-[state=active]:shadow-sm rounded-md transition-all py-3 hover:text-white"
+                className="text-xs sm:text-sm md:text-base font-semibold text-gray-400 data-[state=active]:text-yellowish data-[state=active]:bg-white/10 data-[state=active]:shadow-sm rounded-md transition-all py-2 sm:py-3 px-2 sm:px-3 hover:text-white whitespace-nowrap overflow-hidden text-ellipsis"
               >
                 Property Snapshot
               </TabsTrigger>
               <TabsTrigger 
                 value="membership-tiers" 
-                className="text-base md:text-lg font-semibold text-gray-400 data-[state=active]:text-yellowish data-[state=active]:bg-white/10 data-[state=active]:shadow-sm rounded-md transition-all py-3 hover:text-white"
+                className="text-xs sm:text-sm md:text-base font-semibold text-gray-400 data-[state=active]:text-yellowish data-[state=active]:bg-white/10 data-[state=active]:shadow-sm rounded-md transition-all py-2 sm:py-3 px-2 sm:px-3 hover:text-white whitespace-nowrap overflow-hidden text-ellipsis"
               >
                 Membership Tiers
               </TabsTrigger>
               <TabsTrigger 
                 value="disclosures" 
-                className="text-base md:text-lg font-semibold text-gray-400 data-[state=active]:text-yellowish data-[state=active]:bg-white/10 data-[state=active]:shadow-sm rounded-md transition-all py-3 hover:text-white"
+                className="text-xs sm:text-sm md:text-base font-semibold text-gray-400 data-[state=active]:text-yellowish data-[state=active]:bg-white/10 data-[state=active]:shadow-sm rounded-md transition-all py-2 sm:py-3 px-2 sm:px-3 hover:text-white whitespace-nowrap overflow-hidden text-ellipsis"
               >
                 Disclosures
               </TabsTrigger>
