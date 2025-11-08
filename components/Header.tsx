@@ -4,12 +4,15 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "thirdweb/react";
+import KycPrompt, { useKycStatus } from "@/components/KycPrompt";
 import { base } from "thirdweb/chains";
 import { getThirdwebClient } from "@/lib/thirdweb-client";
 import { getImagePath } from "@/lib/utils";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [kycOpen, setKycOpen] = useState(false);
+  const { kycEnabled, verified, refresh } = useKycStatus();
 
   // Get client for ConnectButton
   const client = useMemo(() => {
@@ -74,7 +77,17 @@ export default function Header() {
                   padding: "4px 8px",
                 }}
               >
-                <ConnectButton client={client} chain={base} />
+                <div className="relative">
+                  <ConnectButton client={client} chain={base} />
+                  {kycEnabled && !verified && (
+                    <button
+                      type="button"
+                      aria-label="Open KYC verification"
+                      className="absolute inset-0 z-10 bg-transparent cursor-pointer"
+                      onClick={() => setKycOpen(true)}
+                    />
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -92,7 +105,17 @@ export default function Header() {
                   padding: "4px 8px",
                 }}
               >
-                <ConnectButton client={client} chain={base} />
+                <div className="relative">
+                  <ConnectButton client={client} chain={base} />
+                  {kycEnabled && !verified && (
+                    <button
+                      type="button"
+                      aria-label="Open KYC verification"
+                      className="absolute inset-0 z-10 bg-transparent cursor-pointer"
+                      onClick={() => setKycOpen(true)}
+                    />
+                  )}
+                </div>
               </div>
             )}
             <button
@@ -152,6 +175,13 @@ export default function Header() {
             </Link>
           </div>
         )}
+        <KycPrompt
+          open={kycOpen}
+          onOpenChange={(o) => {
+            setKycOpen(o);
+            if (!o) refresh();
+          }}
+        />
       </nav>
     </header>
   );

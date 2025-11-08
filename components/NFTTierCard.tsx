@@ -16,6 +16,7 @@ import { getThirdwebClient } from "@/lib/thirdweb-client";
 import { toast } from "@/hooks/use-toast";
 import { getActiveClaimCondition } from "thirdweb/extensions/erc1155";
 import { getCurrencyMetadata } from "thirdweb/extensions/erc20";
+import KycPrompt from "@/components/KycPrompt";
 
 interface NFTTierCardProps {
   tokenId: number;
@@ -45,6 +46,7 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
     symbol: string;
     decimals: number;
   } | null>(null);
+  const [kycOpen, setKycOpen] = useState(false);
   const hasFetched = useRef(false);
 
   // client
@@ -224,6 +226,11 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
   const totalPrice = claimCondition
     ? claimCondition.pricePerToken * BigInt(quantity)
     : BigInt(0);
+  const kycEnabled = process.env.NEXT_PUBLIC_KYC_ENABLED === "true";
+  const kycVerified =
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined" &&
+    window.localStorage.getItem("kycVerified") === "true";
 
   if (!contract || !client) {
     return (
@@ -484,35 +491,47 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
           account &&
           isClaimPhaseActive &&
           chain?.id === base.id ? (
-            <ClaimButton
-              contractAddress={CONTRACT_CONFIG.address}
-              chain={base}
-              client={client}
-              claimParams={{
-                type: "ERC1155",
-                quantity: BigInt(quantity),
-                tokenId: BigInt(tokenId),
-              }}
-              onTransactionConfirmed={() => {
-                toast({
-                  title: "Mint Successful!",
-                  description: `Successfully minted ${quantity} Pre-Launch Voucher${quantity > 1 ? "s" : ""}!`,
-                });
-                setQuantity(1);
-              }}
-              onError={(error) => {
-                toast({
-                  title: "Mint Failed",
-                  description:
-                    error.message ||
-                    "Failed to mint Pre-Launch Voucher. Please try again.",
-                  variant: "destructive",
-                });
-              }}
-              className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-            >
-              Mint {quantity} Pre-Launch Voucher{quantity > 1 ? "s" : ""}
-            </ClaimButton>
+            kycEnabled && !kycVerified ? (
+              <>
+                <button
+                  onClick={() => setKycOpen(true)}
+                  className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                >
+                  Verify to Mint
+                </button>
+                <KycPrompt open={kycOpen} onOpenChange={setKycOpen} />
+              </>
+            ) : (
+              <ClaimButton
+                contractAddress={CONTRACT_CONFIG.address}
+                chain={base}
+                client={client}
+                claimParams={{
+                  type: "ERC1155",
+                  quantity: BigInt(quantity),
+                  tokenId: BigInt(tokenId),
+                }}
+                onTransactionConfirmed={() => {
+                  toast({
+                    title: "Mint Successful!",
+                    description: `Successfully minted ${quantity} Pre-Launch Voucher${quantity > 1 ? "s" : ""}!`,
+                  });
+                  setQuantity(1);
+                }}
+                onError={(error) => {
+                  toast({
+                    title: "Mint Failed",
+                    description:
+                      error.message ||
+                      "Failed to mint Pre-Launch Voucher. Please try again.",
+                    variant: "destructive",
+                  });
+                }}
+                className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              >
+                Mint {quantity} Pre-Launch Voucher{quantity > 1 ? "s" : ""}
+              </ClaimButton>
+            )
           ) : (
             <button
               disabled

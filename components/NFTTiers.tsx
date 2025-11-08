@@ -19,9 +19,9 @@ export default function SmartDeedsTiers() {
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Select a pre‑launch Voucher tier. The Voucher is a pre‑launch
             instrument—no present membership or economic rights. At Launch, it
-            becomes your SmartDeed and your non‑financial Membership benefits
-            activate. Funding is held in escrow and released at Launch; bring
-            your own wallet.
+            becomes your SmartDeed and your Membership benefits activate.
+            Funding is held in escrow and released at Launch; bring your own
+            wallet.
           </p>
         </div>
 
@@ -88,8 +88,8 @@ export default function SmartDeedsTiers() {
           )}
 
           <p className="text-sm text-gray-400">
-            * All purchases are subject to KYC verification and terms of
-            service. Payments are processed on the Base network.
+            * In the United States, purchases are subject to KYC verification
+            and terms of service. Payments are processed on the Base network.
           </p>
         </div>
       </div>
