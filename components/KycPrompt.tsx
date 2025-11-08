@@ -150,8 +150,8 @@ export default function KycPrompt({
   open,
   onOpenChange,
 
-  title = "Identity verification required",
-  description = "To continue, please complete a quick KYC check. This helps keep members and the project safe.",
+  title = "Quick ID check",
+  description = "Private. Secure. ~2 min.",
   startLabel = "Start verification",
   cancelLabel = "Not now",
 
@@ -239,6 +239,140 @@ export default function KycPrompt({
           </div>
         )}
 
+        {/* Trust signals */}
+        <div className="mt-4 flex items-center justify-center gap-5 text-xs text-gray-700 dark:text-gray-300">
+          <div className="flex items-center gap-2">
+            <svg
+              className="text-emerald-600 dark:text-emerald-400"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 22c7-3 8-7 8-10V7l-8-4-8 4v5c0 3 1 7 8 10z" />
+            </svg>
+            <span>No data stored</span>
+          </div>
+          <span className="opacity-40">•</span>
+          <div className="flex items-center gap-2">
+            <svg
+              className="text-emerald-600 dark:text-emerald-400"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9z" />
+            </svg>
+            <span>Bank‑grade</span>
+          </div>
+          <span className="opacity-40">•</span>
+          <div className="flex items-center gap-2">
+            <svg
+              className="text-emerald-600 dark:text-emerald-400"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
+            </svg>
+            <span>~2 min</span>
+          </div>
+        </div>
+        {/* Legacy (hidden) trust grid */}
+        <div className="hidden mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+          <div className="flex items-start gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 p-3">
+            <svg
+              className="text-emerald-600 dark:text-emerald-400 flex-shrink-0"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 22c7-3 8-7 8-10V7l-8-4-8 4v5c0 3 1 7 8 10z" />
+            </svg>
+            <div>
+              <p className="text-sm font-semibold text-black dark:text-white">
+                No data stored
+              </p>
+              <p className="text-xs text-gray-600 dark:text-gray-300">
+                We never store your info.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 p-3">
+            <svg
+              className="text-emerald-600 dark:text-emerald-400 flex-shrink-0"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9z" />
+            </svg>
+            <div>
+              <p className="text-sm font-semibold text-black dark:text-white">
+                Bank‑grade
+              </p>
+              <p className="text-xs text-gray-600 dark:text-gray-300">
+                US may require KYC.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 p-3">
+            <svg
+              className="text-emerald-600 dark:text-emerald-400 flex-shrink-0"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
+            </svg>
+            <div>
+              <p className="text-sm font-semibold text-black dark:text-white">
+                ~2 min
+              </p>
+              <p className="text-xs text-gray-600 dark:text-gray-300">
+                Connect wallet after.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <button
             type="button"
@@ -259,9 +393,8 @@ export default function KycPrompt({
           </button>
         </div>
 
-        <div className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
-          You’ll be redirected to our verification provider. On completion,
-          you’ll return here automatically.
+        <div className="mt-3 text-center text-xs text-gray-500 dark:text-gray-400">
+          Private • Connect wallet right after.
         </div>
       </div>
     </div>,

@@ -17,6 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import { getActiveClaimCondition } from "thirdweb/extensions/erc1155";
 import { getCurrencyMetadata } from "thirdweb/extensions/erc20";
 import KycPrompt from "@/components/KycPrompt";
+import Link from "next/link";
 
 interface NFTTierCardProps {
   tokenId: number;
@@ -477,9 +478,9 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
                     : "Free"}
                 </div>
                 <div className="mt-3 text-xs text-gray-500 dark:text-gray-400 text-center">
-                  <a href="/terms" className="underline hover:no-underline">
+                  <Link href="/terms" className="underline hover:no-underline">
                     Presale terms apply →
-                  </a>
+                  </Link>
                 </div>
               </>
             )}

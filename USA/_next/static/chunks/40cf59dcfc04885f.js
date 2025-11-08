@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,931581,t=>{"use strict";var e=t.i(155996),i=t.i(590757);t.s(["getNFT",()=>e.getNFT,"isGetNFTSupported",()=>i.isUriSupported])}]);

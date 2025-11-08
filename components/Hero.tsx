@@ -18,7 +18,7 @@ const IMAGES = [
 export default function Hero() {
   const [index, setIndex] = useState(0);
   const [timerExpired, setTimerExpired] = useState(false);
-  const launchDate = "2025-11-29T00:00:00Z";
+  const launchDate = "2025-11-15T00:00:00Z";
 
   useEffect(() => {
     const difference = new Date(launchDate).getTime() - new Date().getTime();
@@ -136,16 +136,12 @@ export default function Hero() {
           {!timerExpired ? (
             <>
               <p className="text-lg md:text-xl text-white/90">
-                Pre‑Launch ends Nov 29, 2025
+                Pre‑Launch ends Nov 15, 2025
               </p>
               <CountdownTimer
                 targetDate={launchDate}
                 onExpired={handleTimerExpired}
               />
-              <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-white/90 border border-white/20">
-                <span>11/29/25 — Invite‑Only Launch Party · Select tiers</span>
-                <span className="opacity-80">Featuring art by Keeley</span>
-              </div>
             </>
           ) : (
             <a
@@ -166,9 +162,41 @@ export default function Hero() {
           </a>
         </div>
 
-        <p className="text-sm text-gray-400 mt-6">
-          Exclusive early access. Limited invites remaining.
-        </p>
+        <div className="mt-6 space-y-4">
+          <p className="text-sm text-gray-400">
+            Exclusive early access. Limited invites remaining.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto">
+            <div className="rounded-lg bg-white/10 border border-white/20 p-4 text-left">
+              <p className="text-white/95 text-sm font-semibold">
+                Funds in Escrow · Fast Refunds
+              </p>
+              <p className="text-gray-300/90 text-xs mt-1">
+                Pre‑launch commitments sit in escrow. If you request a refund
+                before Launch, we’ll process it promptly per the Terms.
+              </p>
+            </div>
+            <div className="rounded-lg bg-white/10 border border-white/20 p-4 text-left">
+              <p className="text-white/95 text-sm font-semibold">
+                On‑Chain Transparency
+              </p>
+              <p className="text-gray-300/90 text-xs mt-1">
+                Transactions settle on Base. Your wallet is your receipt —
+                verifiable, permanent, and portable.
+              </p>
+            </div>
+            <div className="rounded-lg bg-white/10 border border-white/20 p-4 text-left">
+              <p className="text-white/95 text-sm font-semibold">
+                Jurisdictional Compliance
+              </p>
+              <p className="text-gray-300/90 text-xs mt-1">
+                In the United States, purchases are subject to KYC and Terms;
+                elsewhere, KYC may not apply.
+              </p>
+            </div>
+          </div>
+        </div>
       </motion.div>
     </section>
   );

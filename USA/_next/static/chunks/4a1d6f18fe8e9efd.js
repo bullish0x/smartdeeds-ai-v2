@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,778375,i=>{"use strict";var e=i.i(163901),s=i.i(607076);i.s(["decimals",()=>e.decimals,"isDecimalsSupported",()=>s.isDecimalsSupported])}]);

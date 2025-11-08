@@ -48,7 +48,7 @@ export default function Footer() {
 
               <li>
                 <Link
-                  href="/kyc"
+                  href="/kyc/start"
                   className="text-gray-400 hover:text-yellowish transition-colors"
                 >
                   KYC
