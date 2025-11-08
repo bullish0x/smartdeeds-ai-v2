@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Wallet } from "lucide-react";
+import { Menu, X, Wallet, Shield } from "lucide-react";
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import {
   Dialog,
@@ -149,27 +149,29 @@ export default function Header() {
 
             {client && (
               <div className="ml-2 flex-shrink-0">
-                <div className={cn(
-                  "relative rounded-lg overflow-hidden backdrop-blur-md border transition-all",
-                  account 
-                    ? "bg-white/5 border-white/10 hover:border-white/20 [&_button]:!bg-transparent [&_button]:!text-white [&_button:hover]:!text-yellowish [&_button]:!border-none [&_button]:!font-medium [&_button]:!text-sm [&_button]:!px-4 [&_button]:!py-2"
-                    : "bg-yellowish/10 border-yellowish/30 hover:border-yellowish/50 [&_button]:!bg-yellowish [&_button]:!text-black [&_button:hover]:!bg-yellowish/90 [&_button]:!border-none [&_button]:!font-semibold [&_button]:!text-sm [&_button]:!px-4 [&_button]:!py-2"
-                )}>
-                  <div className="relative">
+                {kycEnabled && !verified ? (
+                  // Show "Verify to Connect" button when KYC is required
+                  <button
+                    onClick={() => setKycOpen(true)}
+                    className="px-4 py-2 rounded-lg bg-zinc-800 text-white hover:bg-zinc-700 border border-zinc-700 hover:border-zinc-600 transition-all font-semibold text-sm shadow-lg flex items-center gap-2"
+                  >
+                    <Shield className="w-4 h-4" />
+                    Verify to Connect
+                  </button>
+                ) : (
+                  // Show normal ConnectButton when KYC is not required or already verified
+                  <div className={cn(
+                    "relative rounded-lg overflow-hidden backdrop-blur-md border transition-all",
+                    account 
+                      ? "bg-white/5 border-white/10 hover:border-white/20 [&_button]:!bg-transparent [&_button]:!text-white [&_button:hover]:!text-yellowish [&_button]:!border-none [&_button]:!font-medium [&_button]:!text-sm [&_button]:!px-4 [&_button]:!py-2"
+                      : "bg-zinc-800/90 border-zinc-700 hover:border-zinc-600 [&_button]:!bg-zinc-800 [&_button]:!text-white [&_button:hover]:!bg-zinc-700 [&_button]:!border-none [&_button]:!font-semibold [&_button]:!text-sm [&_button]:!px-4 [&_button]:!py-2 [&_button]:!shadow-lg"
+                  )}>
                     <ConnectButton 
                       client={client} 
                       chain={base}
                     />
-                    {kycEnabled && !verified && (
-                      <button
-                        type="button"
-                        aria-label="Open KYC verification"
-                        className="absolute inset-0 z-10 bg-transparent cursor-pointer"
-                        onClick={() => setKycOpen(true)}
-                      />
-                    )}
                   </div>
-                </div>
+                )}
               </div>
             )}
           </div>
@@ -179,45 +181,47 @@ export default function Header() {
             {client && (
               <>
                 {/* Icon-only button for mobile */}
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setConnectModalOpen(true)}
-                  className="p-2 rounded-lg bg-yellowish/10 backdrop-blur-md border border-yellowish/30 hover:border-yellowish/50 hover:bg-yellowish/20 transition-all text-yellowish"
-                  aria-label="Connect wallet"
-                >
-                  <Wallet className="w-5 h-5" />
-                </motion.button>
-                
-                {/* Connect Modal */}
-                <Dialog open={connectModalOpen} onOpenChange={setConnectModalOpen}>
-                  <DialogContent className="max-w-md w-full bg-zinc-900 border-white/10 p-6">
-                    <VisuallyHidden>
-                      <DialogTitle>Connect Wallet</DialogTitle>
-                    </VisuallyHidden>
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-white mb-4 text-center">
-                        Connect Your Wallet
-                      </h3>
-                      <div className="relative w-full [&_button]:!w-full [&_button]:!bg-yellowish [&_button]:!text-black [&_button:hover]:!bg-yellowish/90 [&_button]:!border-none [&_button]:!font-semibold [&_button]:!rounded-lg [&_button]:!h-12 [&_button]:!text-base">
-                        <ConnectButton 
-                          client={client} 
-                          chain={base}
-                        />
-                        {kycEnabled && !verified && (
-                          <button
-                            type="button"
-                            aria-label="Open KYC verification"
-                            className="absolute inset-0 z-10 bg-transparent cursor-pointer"
-                            onClick={() => {
-                              setConnectModalOpen(false);
-                              setKycOpen(true);
-                            }}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                {kycEnabled && !verified ? (
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setKycOpen(true)}
+                    className="p-2 rounded-lg bg-zinc-800/90 backdrop-blur-md border border-zinc-700 hover:border-zinc-600 hover:bg-zinc-700 transition-all text-white"
+                    aria-label="Verify to connect wallet"
+                  >
+                    <Shield className="w-5 h-5" />
+                  </motion.button>
+                ) : (
+                  <>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setConnectModalOpen(true)}
+                      className="p-2 rounded-lg bg-zinc-800/90 backdrop-blur-md border border-zinc-700 hover:border-zinc-600 hover:bg-zinc-700 transition-all text-white"
+                      aria-label="Connect wallet"
+                    >
+                      <Wallet className="w-5 h-5" />
+                    </motion.button>
+                    
+                    {/* Connect Modal */}
+                    <Dialog open={connectModalOpen} onOpenChange={setConnectModalOpen}>
+                      <DialogContent className="max-w-md w-full bg-zinc-900 border-white/10 p-6">
+                        <VisuallyHidden>
+                          <DialogTitle>Connect Wallet</DialogTitle>
+                        </VisuallyHidden>
+                        <div className="space-y-4">
+                          <h3 className="text-lg font-semibold text-white mb-4 text-center">
+                            Connect Your Wallet
+                          </h3>
+                          <div className="relative w-full [&_button]:!w-full [&_button]:!bg-zinc-800 [&_button]:!text-white [&_button:hover]:!bg-zinc-700 [&_button]:!border-none [&_button]:!font-semibold [&_button]:!rounded-lg [&_button]:!h-12 [&_button]:!text-base [&_button]:!shadow-lg">
+                            <ConnectButton 
+                              client={client} 
+                              chain={base}
+                            />
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </>
+                )}
               </>
             )}
             <motion.button

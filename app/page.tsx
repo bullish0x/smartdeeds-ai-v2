@@ -5,8 +5,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
-// Use the tiers component once (rename as you prefer)
-import SmartDeedsTiers from "@/components/NFTTiers";
+// Use the tiers section wrapper that handles KYC gating
+import TiersSection from "@/components/TiersSection";
 import ProjectMalibu from "@/components/ProjectMalibu";
 import MalibuProgram from "@/components/MalibuProgram";
 import Team from "@/components/Team";
@@ -75,7 +75,8 @@ export default function Home() {
         <HowItWorks />
 
         {/* 6. Tiers - Now they're interested, show the membership options */}
-        <SmartDeedsTiers />
+        {/* This component conditionally shows NFTTiers or KycSection based on KYC status */}
+        <TiersSection />
         
         {/* 7. Publications - Reinforce credibility mid-funnel */}
         <PublicationsCarousel />
