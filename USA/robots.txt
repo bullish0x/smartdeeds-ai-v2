@@ -1,5 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /kyc
-
-Sitemap: https://prelaunch.smartdeeds.ai/sitemap.xml
