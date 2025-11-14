@@ -329,7 +329,7 @@ export default function NFTTierCard({ tokenId }: NFTTierCardProps) {
               <div className="mb-3 p-2.5 bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-lg space-y-1.5 backdrop-blur-sm text-xs">
                 {/* Availability */}
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Available:</span>
+                  <span className="text-gray-400">Sold:</span>
                   <span className="text-white font-medium">
                     {claimCondition.maxClaimableSupply > BigInt(0)
                       ? `${claimCondition.supplyClaimed.toString()} / ${claimCondition.maxClaimableSupply.toString()}`

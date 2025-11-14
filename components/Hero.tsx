@@ -20,7 +20,7 @@ const IMAGES = [
 export default function Hero() {
   const [index, setIndex] = useState(0);
   const [timerExpired, setTimerExpired] = useState(false);
-  const launchDate = "2025-11-15T00:00:00Z";
+  const launchDate = "2025-11-22T00:00:00Z";
 
   // Parallax effect on scroll for background images
   const { scrollY } = useScroll();
@@ -140,7 +140,7 @@ export default function Hero() {
           {!timerExpired ? (
             <>
               <p className="text-lg md:text-xl text-white font-semibold bg-yellowish/20 px-6 py-3 rounded-full border border-yellowish/50">
-                Pre‑Launch ends Nov 15, 2025
+                Pre‑Launch ends Nov 22, 2025
               </p>
               <CountdownTimer
                 targetDate={launchDate}
